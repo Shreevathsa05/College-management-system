@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="page-title">👤 Staff Profiles</div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- Search by ID -->
+  <div class="card">
+    <h2>🔎 Search Profile by ID</h2>
+    <div style="display:flex; gap:10px; align-items:flex-end;">
+      <div class="form-group" style="margin-bottom:0; flex:1;">
+        <label>Staff ID</label>
+        <input type="number" [(ngModel)]="searchId" placeholder="Enter staff ID..." min="1" (keyup.enter)="searchById()" />
+      </div>
+      <button class="btn btn-primary" (click)="searchById()">Search</button>
+    </div>
+    <div *ngIf="searchError" class="alert alert-danger" style="margin-top:12px;">{{ searchError }}</div>
+  </div>
+
+  <!-- Selected Profile Card -->
+  <div class="card" *ngIf="selectedStaff" style="border-left: 4px solid #1a237e;">
+    <h2>📋 Profile Details</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+      <div>
+        <p style="color:#888; font-size:12px; margin-bottom:2px;">STAFF ID</p>
+        <p style="font-size:18px; font-weight:700; color:#1a237e;">#{{ selectedStaff.staffId }}</p>
+      </div>
+      <div>
+        <p style="color:#888; font-size:12px; margin-bottom:2px;">FULL NAME</p>
+        <p style="font-size:18px; font-weight:700;">{{ selectedStaff.staffName }}</p>
+      </div>
+      <div>
+        <p style="color:#888; font-size:12px; margin-bottom:2px;">DEPARTMENT ID</p>
+        <p style="font-size:16px; font-weight:600;"><span class="badge badge-info">Dept {{ selectedStaff.departmentId }}</span></p>
+      </div>
+      <div>
+        <p style="color:#888; font-size:12px; margin-bottom:2px;">SALARY</p>
+        <p style="font-size:18px; font-weight:700; color:#2e7d32;">₹{{ selectedStaff.salary | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Profiles Grid -->
+  <div class="card">
+    <h2>All Staff Profiles</h2>
+    <div *ngIf="loading" class="loading">Loading profiles...</div>
+    <div *ngIf="!loading && staffList.length === 0" class="empty-state">No staff found.</div>
+    <div *ngIf="!loading && staffList.length > 0"
+         style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:14px;">
+      <div *ngFor="let s of staffList"
+           (click)="selectProfile(s)"
+           style="border:1px solid #e0e0e0; border-radius:8px; padding:16px; cursor:pointer; transition:box-shadow 0.2s;"
+           [style.border-color]="selectedStaff?.staffId === s.staffId ? '#1a237e' : '#e0e0e0'"
+           [style.box-shadow]="selectedStaff?.staffId === s.staffId ? '0 0 0 2px #1a237e' : 'none'"
+           onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'"
+           onmouseout="this.style.boxShadow=''">
+        <div style="width:44px; height:44px; border-radius:50%; background:#1a237e; color:white; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; margin-bottom:10px;">
+          {{ s.staffName.charAt(0).toUpperCase() }}
+        </div>
+        <p style="font-weight:700; margin-bottom:4px;">{{ s.staffName }}</p>
+        <p style="font-size:12px; color:#888;">ID: {{ s.staffId }}</p>
+        <p style="font-size:12px; color:#888;">Dept: {{ s.departmentId }}</p>
+        <p style="font-size:13px; color:#2e7d32; font-weight:600; margin-top:6px;">₹{{ s.salary | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+<div class="container">
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div class="page-title">👥 Staff Management</div>
+    <button class="btn btn-success" (click)="openAddModal()">+ Add Staff</button>
+  </div>
+
+  <div *ngIf="successMsg" class="alert alert-success">{{ successMsg }}</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- SEARCH -->
+  <div class="card">
+    <h2>🔍 Search & Filter</h2>
+
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+      <input [(ngModel)]="searchName" placeholder="Enter staff name..." />
+      <button class="btn btn-primary" (click)="searchByNameFromServer()">Search</button>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-bottom:10px;">
+      <input type="number" [(ngModel)]="filterDeptId" placeholder="Dept ID..." />
+      <button class="btn btn-primary" (click)="filterByDept()">Filter</button>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+      <input type="number" [(ngModel)]="filterMinSalary" placeholder="Min salary..." />
+      <button class="btn btn-primary" (click)="filterBySalary()">Filter</button>
+      <button class="btn btn-secondary" (click)="clearFilters()">Clear</button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h2>Staff Records</h2>
+
+    <div *ngIf="loading">Loading...</div>
+
+    <table *ngIf="!loading">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Dept</th>
+        <th>Salary</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let staff of filteredList">
+        <td>{{ staff.staffId }}</td>
+        <td>{{ staff.staffName }}</td>
+        <td>{{ staff.departmentId }}</td>
+        <td>{{ staff.salary }}</td>
+        <td>
+          <button class="btn btn-warning" (click)="openEditModal(staff)">Edit</button>
+          <button class="btn btn-danger" (click)="openDeleteModal(staff)">Delete</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div *ngIf="showModal" class="modal-overlay">
+  <div class="modal-box">
+
+    <h3>{{ isEditMode ? 'Edit Staff' : 'Add Staff' }}</h3>
+
+    <input [(ngModel)]="formData.staffName" placeholder="Name" />
+    <input type="number" [(ngModel)]="formData.departmentId" placeholder="Department ID" />
+    <input type="number" [(ngModel)]="formData.salary" placeholder="Salary" />
+
+    <button (click)="saveStaff()">Save</button>
+    <button (click)="showModal=false">Cancel</button>
+
+  </div>
+</div>
+
+<!-- DELETE -->
+<div *ngIf="showDeleteModal" class="modal-overlay">
+  <div class="modal-box">
+    <p>Delete {{ deletingName }}?</p>
+    <button (click)="confirmDelete()">Yes</button>
+    <button (click)="showDeleteModal=false">No</button>
+  </div>
+</div>

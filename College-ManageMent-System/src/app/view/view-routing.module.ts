@@ -4,10 +4,16 @@ import { DepartmentComponent } from './role/admin/department/department.componen
 
 const routes: Routes = [
   { path: 'department', component: DepartmentComponent },
+
+  {
+    path: 'faculty',
+    loadChildren: () =>
+      import('./role/faculty/faculty.module').then(m => m.FacultyModule)
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ViewRoutingModule { }
+export class ViewRoutingModule {}
