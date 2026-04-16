@@ -15,11 +15,11 @@
         <div class="stat-label">Departments</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">₹{{ avgSalary }}</div>
+        <div class="stat-number">₹{{ avgSalary | number:'1.2-2' }}</div>
         <div class="stat-label">Avg Salary</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">₹{{ highestSalary }}</div>
+        <div class="stat-number">₹{{ highestSalary | number:'1.0-0' }}</div>
         <div class="stat-label">Highest Salary</div>
       </div>
     </div>
@@ -41,25 +41,20 @@
             <th>Salary</th>
           </tr>
           </thead>
-
           <tbody>
           <tr *ngFor="let s of staffList.slice(0, 5)">
             <td>{{ s.staffId }}</td>
             <td>{{ s.staffName }}</td>
             <td>
-                <span class="badge badge-info">
-                  Dept {{ s.departmentId }}
-                </span>
+              <span class="badge badge-info">Dept {{ s.departmentId }}</span>
             </td>
             <td>₹{{ s.salary | number:'1.2-2' }}</td>
           </tr>
           </tbody>
         </table>
 
-        <div style="margin-top:12px; text-align:right;">
-          <a routerLink="/staff" class="btn btn-primary">
-            View All Staff →
-          </a>
+        <div style="margin-top:14px; text-align:right;">
+          <a routerLink="/staff" class="btn btn-primary">View All Staff →</a>
         </div>
       </div>
     </div>

@@ -2,8 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-import { FacultyService } from '../../../services/faculty/faculty.service';
 import { FacultyRes } from '../../../models/response_dto/faculty-res';
+
+const STORAGE_KEY = 'staff_data';
+
+const DEFAULT_STAFF: FacultyRes[] = [
+  { staffId: 3, staffName: 'Aabha',   departmentId: 3, salary: 50000 },
+  { staffId: 6, staffName: 'Gayathri', departmentId: 2, salary: 5000000 },
+  { staffId: 2, staffName: 'Disha',    departmentId: 4, salary: 45000 }
+];
 
 @Component({
   selector: 'app-dashboard',
@@ -14,26 +21,21 @@ import { FacultyRes } from '../../../models/response_dto/faculty-res';
 export class DashboardComponent implements OnInit {
 
   staffList: FacultyRes[] = [];
-
   loading = true;
   error = '';
 
-  constructor(private facultyService: FacultyService) {}
-
   ngOnInit(): void {
-    this.facultyService.getFacultyList().subscribe({
-      next: (data: FacultyRes[]) => {
-        this.staffList = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Backend not reachable';
-        this.loading = false;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      this.staffList = saved ? JSON.parse(saved) : DEFAULT_STAFF;
+      if (!saved) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_STAFF));
       }
-    });
+    } catch {
+      this.staffList = DEFAULT_STAFF;
+    }
+    this.loading = false;
   }
-
-  // ✅ ADD THESE (THIS FIXES ALL ERRORS)
 
   get totalStaff(): number {
     return this.staffList.length;
@@ -45,18 +47,11 @@ export class DashboardComponent implements OnInit {
 
   get avgSalary(): number {
     if (!this.staffList.length) return 0;
-
-    return Number(
-      (
-        this.staffList.reduce((sum, s) => sum + s.salary, 0) /
-        this.staffList.length
-      ).toFixed(2)
-    );
+    return this.staffList.reduce((sum, s) => sum + s.salary, 0) / this.staffList.length;
   }
 
   get highestSalary(): number {
     if (!this.staffList.length) return 0;
-
     return Math.max(...this.staffList.map(s => s.salary));
   }
 }
