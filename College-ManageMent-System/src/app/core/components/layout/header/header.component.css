@@ -1,0 +1,56 @@
+/* Header component styling - light theme */
+nav.navbar {
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav.navbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #212121;
+}
+
+nav.navbar h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+nav.navbar .header {
+  font-weight: bold;
+}
+
+nav.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav.navbar ul li a {
+  color: #212121;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav.navbar ul li a:hover {
+  text-decoration: underline;
+}
+
+nav.navbar ul li button {
+  background: none;
+  border: none;
+  color: #212121;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+/* Optional: add subtle border to separate header from content */
+nav.navbar {
+  border-bottom: 1px solid #ddd;
+}
