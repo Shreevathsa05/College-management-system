@@ -47,4 +47,29 @@ export class ExamService {
   deleteExam(id: number | string): Observable<any> {
     return this.http.delete(`/api/exams/${id}`, { headers: this.getHeaders() });
   }
+
+  // FILTERS
+  getUpcoming(): Observable<ExamRes[]> {
+    return this.http.get<ExamRes[]>('/api/exams/upcoming', { headers: this.getHeaders() });
+  }
+
+  getBySubject(subjectId: number | string): Observable<ExamRes[]> {
+    return this.http.get<ExamRes[]>(`/api/exams/subject/${subjectId}`, { headers: this.getHeaders() });
+  }
+
+  getByType(examType: string): Observable<ExamRes[]> {
+    return this.http.get<ExamRes[]>(`/api/exams/type/${examType}`, { headers: this.getHeaders() });
+  }
+
+  getBySession(session: string): Observable<ExamRes[]> {
+    return this.http.get<ExamRes[]>(`/api/exams/session/${session}`, { headers: this.getHeaders() });
+  }
+
+  getByDateRange(from: string, to: string): Observable<ExamRes[]> {
+    return this.http.get<ExamRes[]>(`/api/exams/range?from=${from}&to=${to}`, { headers: this.getHeaders() });
+  }
+
+  getByClassroom(classroomId: number | string): Observable<ExamRes[]> {
+    return this.http.get<ExamRes[]>(`/api/exams/classroom/${classroomId}`, { headers: this.getHeaders() });
+  }
 }

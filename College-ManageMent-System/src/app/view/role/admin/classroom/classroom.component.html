@@ -1,1 +1,130 @@
-<p>classroom works!</p>
+<div class="section-header">
+  <div class="section-title">Classrooms</div>
+  
+  <div class="header-actions">
+    <!-- Filters -->
+    <select [ngModel]="filterType" (ngModelChange)="onFilterTypeChange($event)">
+      <option value="">All Types</option>
+      <option *ngFor="let opt of typeOptions" [value]="opt">{{ opt }}</option>
+    </select>
+    
+    <button class="btn-cancel" style="padding: 4px 10px; font-size: 13px; margin-right: 5px;" (click)="getAvailableOnly()">Show Available</button>
+    <button class="btn-add" (click)="toggleForm()">+ Add</button>
+  </div>
+</div>
+
+<!-- FORM -->
+<form class="card" *ngIf="showForm" [formGroup]="classroomForm" (ngSubmit)="onSubmit()">
+  <div class="card-header">
+    {{ editingId ? 'Edit Classroom' : 'Add Classroom' }}
+  </div>
+
+  <div class="form-body">
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Room Number</label>
+        <input type="text" formControlName="roomNumber" placeholder="e.g. 101A" />
+      </div>
+
+      <div class="form-group">
+        <label>Building</label>
+        <input type="text" formControlName="building" placeholder="e.g. Main Block" />
+      </div>
+
+      <div class="form-group">
+        <label>Classroom Type</label>
+        <select formControlName="classroomType">
+          <option *ngFor="let t of typeOptions" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Floor</label>
+        <input type="number" formControlName="floor" />
+      </div>
+
+      <div class="form-group">
+        <label>Capacity</label>
+        <input type="number" formControlName="capacity" />
+      </div>
+
+      <div class="form-group">
+        <label>Department</label>
+        <select formControlName="departmentId">
+          <option [value]="null">Select Department</option>
+          <option *ngFor="let d of departments" [value]="d.id">{{ d.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group checkbox-group" style="grid-column: 1 / -1; display: flex; gap: 20px;">
+        <div>
+          <input type="checkbox" formControlName="hasProjector" id="proj" />
+          <label for="proj" style="margin-left: 5px;">Has Projector</label>
+        </div>
+        <div>
+          <input type="checkbox" formControlName="hasAC" id="ac" />
+          <label for="ac" style="margin-left: 5px;">Has AC</label>
+        </div>
+        <div>
+          <input type="checkbox" formControlName="isAvailable" id="avail" />
+          <label for="avail" style="margin-left: 5px;">Is Currently Available</label>
+        </div>
+      </div>
+
+      <div class="form-group full actions">
+        <button class="btn-submit" type="submit" [disabled]="classroomForm.invalid">
+          {{ editingId ? 'Update' : 'Save' }}
+        </button>
+
+        <button type="button" class="btn-cancel" (click)="closeForm()">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</form>
+
+<!-- CARDS -->
+<div class="card-grid">
+  <div class="cr-card" *ngFor="let item of classroomList">
+
+    <div class="cr-header">
+      <div>
+        <div class="cr-name">Room {{ item.roomNumber }}</div>
+        <div class="cr-bldg">{{ item.building }} {{ item.floor ? '(Floor ' + item.floor + ')' : '' }}</div>
+      </div>
+      <div>
+        <div class="cr-type">{{ item.classroomType }}</div>
+        <div class="badge" [ngClass]="item.isAvailable ? 'badge-success' : 'badge-danger'">
+           {{ item.isAvailable ? 'AVAILABLE' : 'IN USE' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="cr-body">
+      <div><strong>Capacity:</strong> {{ item.capacity }} Seats</div>
+      <div><strong>Department:</strong> {{ item.departmentName || 'General / N/A' }}</div>
+      <div><strong>Features:</strong> 
+          {{ item.hasProjector ? 'Projector' : '' }}
+          <span *ngIf="item.hasProjector && item.hasAC">, </span>
+          {{ item.hasAC ? 'AC' : '' }}
+          <span *ngIf="!item.hasProjector && !item.hasAC">Basic</span>
+      </div>
+    </div>
+
+    <div class="cr-actions">
+      <!-- Toggle Availability Shortcut -->
+      <button class="btn-toggle" (click)="toggleAvailability(item)">
+          Mark as {{ item.isAvailable ? 'In Use' : 'Available' }}
+      </button>
+
+      <div class="action-btns">
+        <button (click)="editClassroom(item)">Edit</button>
+        <button style="color: #dc3545; border-color: #f5c6cb;" (click)="deleteClassroom(item.id)">Delete</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { ViewRoutingModule } from './view-routing.module';
 import { DepartmentComponent } from './role/admin/department/department.component';
@@ -52,7 +52,8 @@ import { UgprogramComponent } from './role/admin/ugprogram/ugprogram.component';
   imports: [
     CommonModule,
     ViewRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class ViewModule { }

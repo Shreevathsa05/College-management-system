@@ -1,1 +1,134 @@
-<p>infrastructure works!</p>
+<div class="section-header">
+  <div class="section-title">Infrastructure</div>
+  
+  <div class="header-actions">
+    <!-- Filters -->
+    <select [ngModel]="filterType" (ngModelChange)="onFilterTypeChange($event)">
+      <option value="">All Types</option>
+      <option *ngFor="let opt of typeOptions" [value]="opt">{{ opt }}</option>
+    </select>
+    
+    <select [ngModel]="filterStatus" (ngModelChange)="onFilterStatusChange($event)">
+      <option value="">All Statuses</option>
+      <option *ngFor="let opt of statusOptions" [value]="opt">{{ opt }}</option>
+    </select>
+
+    <button class="btn-add" (click)="toggleForm()">+ Add</button>
+  </div>
+</div>
+
+<!-- FORM -->
+<form class="card" *ngIf="showForm" [formGroup]="infrastructureForm" (ngSubmit)="onSubmit()">
+  <div class="card-header">
+    {{ editingId ? 'Edit Infrastructure' : 'Add Infrastructure' }}
+  </div>
+
+  <div class="form-body">
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Room/Lab Name</label>
+        <input type="text" formControlName="roomOrLabName" placeholder="e.g. A-101" />
+      </div>
+
+      <div class="form-group">
+        <label>Type</label>
+        <select formControlName="type">
+          <option *ngFor="let t of typeOptions" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Block</label>
+        <input type="text" formControlName="block" placeholder="e.g. North Block" />
+      </div>
+
+      <div class="form-group">
+        <label>Floor</label>
+        <input type="number" formControlName="floor" />
+      </div>
+
+      <div class="form-group">
+        <label>Capacity</label>
+        <input type="number" formControlName="capacity" />
+      </div>
+
+      <div class="form-group">
+        <label>No. of Computers</label>
+        <input type="number" formControlName="noOfComputers" />
+      </div>
+
+      <div class="form-group checkbox-group">
+        <input type="checkbox" formControlName="hasProjector" id="proj" />
+        <label for="proj">Has Projector</label>
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Department</label>
+        <select formControlName="departmentId">
+          <option [value]="null">Select Department</option>
+          <option *ngFor="let d of departments" [value]="d.id">{{ d.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group full actions">
+        <button class="btn-submit" type="submit" [disabled]="infrastructureForm.invalid">
+          {{ editingId ? 'Update' : 'Save' }}
+        </button>
+
+        <button type="button" class="btn-cancel" (click)="closeForm()">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</form>
+
+<!-- CARDS -->
+<div class="card-grid">
+  <div class="infra-card" *ngFor="let item of infrastructureList">
+
+    <div class="infra-header">
+      <div>
+        <div class="infra-name">{{ item.roomOrLabName }}</div>
+        <div class="infra-type">{{ item.type }}</div>
+      </div>
+      <div class="infra-status status-{{item.status}}">
+        {{ item.status }}
+      </div>
+    </div>
+
+    <div class="infra-body">
+      <div><strong>Block:</strong> {{ item.block }} (Floor {{ item.floor }})</div>
+      <div><strong>Capacity:</strong> {{ item.capacity }}</div>
+      <div><strong>Department:</strong> {{ item.departmentName || 'N/A' }}</div>
+      <div><strong>Features:</strong> 
+          {{ item.hasProjector ? 'Projector' : '' }}
+          <span *ngIf="item.hasProjector && item.noOfComputers">, </span>
+          {{ item.noOfComputers ? item.noOfComputers + ' Computers' : '' }}
+          <span *ngIf="!item.hasProjector && !item.noOfComputers">None</span>
+      </div>
+    </div>
+
+    <div class="infra-actions">
+      <!-- Quick Status Update -->
+      <select [ngModel]="item.status" (ngModelChange)="updateStatus(item.id, $event)">
+         <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+      </select>
+
+      <div class="action-btns">
+        <button (click)="editInfrastructure(item)">Edit</button>
+        <button style="color: #dc3545; border-color: #f5c6cb;" (click)="deleteInfrastructure(item.id)">Delete</button>
+      </div>
+    </div>
+
+  </div>
+</div>

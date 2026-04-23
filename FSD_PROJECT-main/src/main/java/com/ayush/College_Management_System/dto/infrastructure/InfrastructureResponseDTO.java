@@ -1,5 +1,7 @@
 package com.ayush.College_Management_System.dto.infrastructure;
 
+import com.ayush.College_Management_System.model.enums.InfrastructureStatus;
+import com.ayush.College_Management_System.model.enums.InfrastructureType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ public class InfrastructureResponseDTO {
     private Integer capacity;
     private Boolean hasProjector;
     private Integer noOfComputers;
-    private String status;
+    private InfrastructureStatus status;
+    private InfrastructureType type;
     private String departmentName;
 }

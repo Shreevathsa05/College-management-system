@@ -1,1 +1,131 @@
-<p>exam works!</p>
+<div class="section-header">
+  <div class="section-title">Exams</div>
+  
+  <div class="header-actions">
+    <!-- Filters -->
+    <select [ngModel]="filterType" (ngModelChange)="onFilterTypeChange($event)">
+      <option value="">All Types</option>
+      <option *ngFor="let opt of examTypes" [value]="opt">{{ opt }}</option>
+    </select>
+
+    <input type="text" placeholder="Filter by Session (e.g. 2023-24)" class="filter-input" [ngModel]="filterSession" (ngModelChange)="onFilterSessionChange($event)">
+    
+    <button class="btn-cancel" style="padding: 4px 10px; font-size: 13px; margin-right: 5px;" (click)="getUpcomingExams()">Upcoming</button>
+    <button class="btn-add" (click)="toggleForm()">+ Add</button>
+  </div>
+</div>
+
+<!-- FORM -->
+<form class="card" *ngIf="showForm" [formGroup]="examForm" (ngSubmit)="onSubmit()">
+  <div class="card-header">
+    {{ editingId ? 'Edit Exam' : 'Add Exam' }}
+  </div>
+
+  <div class="form-body">
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Exam Type</label>
+        <select formControlName="examType">
+          <option *ngFor="let t of examTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Session</label>
+        <input type="text" formControlName="session" placeholder="e.g. 2023-24" />
+      </div>
+
+      <div class="form-group">
+        <label>Exam Date</label>
+        <input type="date" formControlName="examDate" />
+      </div>
+
+      <div class="form-group">
+        <label>Start Time</label>
+        <input type="time" formControlName="startTime" />
+      </div>
+
+      <div class="form-group">
+        <label>End Time</label>
+        <input type="time" formControlName="endTime" />
+      </div>
+
+      <div class="form-group">
+        <label>Max Marks</label>
+        <input type="number" formControlName="maxMarks" />
+      </div>
+
+      <div class="form-group">
+        <label>Passing Marks</label>
+        <input type="number" formControlName="passingMarks" />
+      </div>
+
+      <div class="form-group">
+        <label>Subject</label>
+        <select formControlName="subjectId">
+          <option [value]="null">Select Subject</option>
+          <option *ngFor="let s of subjects" [value]="s.id">{{ s.subName }} ({{ s.subCode }})</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Location (Classroom)</label>
+        <select formControlName="classroomId">
+          <option [value]="null">TBD / Unassigned</option>
+          <option *ngFor="let c of classrooms" [value]="c.id">Room {{ c.roomNumber }} - {{ c.building }}</option>
+        </select>
+      </div>
+
+      <div class="form-group full actions">
+        <button class="btn-submit" type="submit" [disabled]="examForm.invalid">
+          {{ editingId ? 'Update' : 'Save' }}
+        </button>
+
+        <button type="button" class="btn-cancel" (click)="closeForm()">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</form>
+
+<!-- CARDS -->
+<div class="card-grid">
+  <div class="exam-card" *ngFor="let item of examsList">
+
+    <div class="exam-header">
+      <div>
+        <div class="exam-name">{{ item.subjectName }}</div>
+        <div class="exam-code">{{ item.subjectCode }}</div>
+      </div>
+      <div class="exam-badge type-{{item.examType}}">
+        {{ item.examType }}
+      </div>
+    </div>
+
+    <div class="exam-body">
+      <div><strong>Session:</strong> {{ item.session }}</div>
+      <div><strong>Date:</strong> {{ item.examDate | date }}</div>
+      
+      <div *ngIf="item.startTime || item.endTime">
+        <strong>Time:</strong> 
+        {{ item.startTime ? item.startTime : '?' }} - {{ item.endTime ? item.endTime : '?' }}
+      </div>
+      
+      <div><strong>Marks:</strong> {{ item.maxMarks }} (Pass: {{ item.passingMarks || 'N/A' }})</div>
+      <div><strong>Location:</strong> 
+         {{ item.classroomRoomNumber ? 'Room ' + item.classroomRoomNumber + ' (' + item.classroomBuilding + ')' : 'TBD' }}
+      </div>
+    </div>
+
+    <div class="exam-actions">
+      <div class="action-btns" style="width: 100%; display: flex; justify-content: flex-end;">
+        <button (click)="editExam(item)">Edit</button>
+        <button style="color: #dc3545; border-color: #f5c6cb;" (click)="deleteExam(item.id)">Delete</button>
+      </div>
+    </div>
+
+  </div>
+</div>

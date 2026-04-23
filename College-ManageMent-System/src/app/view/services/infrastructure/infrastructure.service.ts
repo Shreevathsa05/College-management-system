@@ -46,4 +46,26 @@ export class InfrastructureService {
   delete(id: number | string): Observable<any> {
     return this.http.delete(`/api/infrastructure/${id}`, { headers: this.getHeaders() });
   }
+
+  // STATUS PATCH
+  updateStatus(id: number | string, status: string): Observable<InfrastructureRes> {
+    return this.http.patch<InfrastructureRes>(`/api/infrastructure/${id}/status?value=${status}`, {}, { headers: this.getHeaders() });
+  }
+
+  // FILTER METHODS
+  getByDepartment(deptId: number | string): Observable<InfrastructureRes[]> {
+    return this.http.get<InfrastructureRes[]>(`/api/infrastructure/department/${deptId}`, { headers: this.getHeaders() });
+  }
+
+  getByStatus(status: string): Observable<InfrastructureRes[]> {
+    return this.http.get<InfrastructureRes[]>(`/api/infrastructure/status/${status}`, { headers: this.getHeaders() });
+  }
+
+  getByType(type: string): Observable<InfrastructureRes[]> {
+    return this.http.get<InfrastructureRes[]>(`/api/infrastructure/type/${type}`, { headers: this.getHeaders() });
+  }
+
+  getByBlock(block: string): Observable<InfrastructureRes[]> {
+    return this.http.get<InfrastructureRes[]>(`/api/infrastructure/block/${block}`, { headers: this.getHeaders() });
+  }
 }

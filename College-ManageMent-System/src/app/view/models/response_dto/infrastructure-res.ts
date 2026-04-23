@@ -7,5 +7,6 @@ export interface InfrastructureRes {
     hasProjector: boolean;
     noOfComputers: number;
     status: string;
+    type: string;
     departmentName: string;
 }

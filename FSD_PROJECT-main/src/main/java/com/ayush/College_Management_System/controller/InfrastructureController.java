@@ -1,6 +1,8 @@
 package com.ayush.College_Management_System.controller;
 
 import com.ayush.College_Management_System.dto.infrastructure.*;
+import com.ayush.College_Management_System.model.enums.InfrastructureStatus;
+import com.ayush.College_Management_System.model.enums.InfrastructureType;
 import com.ayush.College_Management_System.service.InfrastructureService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +19,12 @@ public class InfrastructureController {
 
     private final InfrastructureService service;
 
+    // ── CRUD ─────────────────────────────────────────────────────────────────
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<InfrastructureResponseDTO> create(@Valid @RequestBody InfrastructureRequestDTO dto) {
+    public ResponseEntity<InfrastructureResponseDTO> create(
+            @Valid @RequestBody InfrastructureRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
@@ -35,7 +40,8 @@ public class InfrastructureController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<InfrastructureResponseDTO> update(@PathVariable Long id, @Valid @RequestBody InfrastructureRequestDTO dto) {
+    public ResponseEntity<InfrastructureResponseDTO> update(
+            @PathVariable Long id, @Valid @RequestBody InfrastructureRequestDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
@@ -44,5 +50,49 @@ public class InfrastructureController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ── Status patch ──────────────────────────────────────────────────────────
+
+    /**
+     * PATCH /api/infrastructure/{id}/status?value=UNDER_MAINTENANCE
+     * Updates only the status field without a full PUT.
+     */
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<InfrastructureResponseDTO> updateStatus(
+            @PathVariable Long id,
+            @RequestParam InfrastructureStatus value) {
+        return ResponseEntity.ok(service.updateStatus(id, value));
+    }
+
+    // ── Filter endpoints ──────────────────────────────────────────────────────
+
+    /** GET /api/infrastructure/department/{deptId} */
+    @GetMapping("/department/{deptId}")
+    public ResponseEntity<List<InfrastructureResponseDTO>> getByDepartment(
+            @PathVariable Long deptId) {
+        return ResponseEntity.ok(service.getByDepartment(deptId));
+    }
+
+    /** GET /api/infrastructure/status/{status} */
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<InfrastructureResponseDTO>> getByStatus(
+            @PathVariable InfrastructureStatus status) {
+        return ResponseEntity.ok(service.getByStatus(status));
+    }
+
+    /** GET /api/infrastructure/type/{type} */
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<InfrastructureResponseDTO>> getByType(
+            @PathVariable InfrastructureType type) {
+        return ResponseEntity.ok(service.getByType(type));
+    }
+
+    /** GET /api/infrastructure/block/{block} */
+    @GetMapping("/block/{block}")
+    public ResponseEntity<List<InfrastructureResponseDTO>> getByBlock(
+            @PathVariable String block) {
+        return ResponseEntity.ok(service.getByBlock(block));
     }
 }
