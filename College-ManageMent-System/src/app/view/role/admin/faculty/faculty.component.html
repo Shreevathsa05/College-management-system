@@ -1,1 +1,175 @@
 <p>faculty works!</p>
+
+<div class="faculty-container">
+    <div class="section-header">
+        <div class="section-title">Faculty Management</div>
+        <button class="btn-add" (click)="toggleForm()">+ Add Faculty</button>
+    </div>
+
+    <form
+        class="card form-container"
+        *ngIf="showForm"
+        [formGroup]="facultyForm"
+        (ngSubmit)="onSubmit()"
+    >
+        <div class="card-header">
+        {{ editingId ? "Edit Faculty Details" : "Register New Faculty" }}
+        </div>
+
+        <div class="form-body">
+        <div class="form-grid">
+            <div class="form-group">
+            <label>Full Name *</label>
+            <input
+                type="text"
+                formControlName="fullName"
+                placeholder="e.g. Dr. Jane Smith"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Employee Code *</label>
+            <input
+                type="text"
+                formControlName="employeeCode"
+                placeholder="e.g. FAC-1042"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Email Address</label>
+            <input
+                type="email"
+                formControlName="email"
+                placeholder="faculty@college.edu"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Phone Number</label>
+            <input
+                type="text"
+                formControlName="phone"
+                placeholder="Contact number"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Designation</label>
+            <input
+                type="text"
+                formControlName="designation"
+                placeholder="e.g. Assistant Professor"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Qualification</label>
+            <input
+                type="text"
+                formControlName="qualification"
+                placeholder="e.g. Ph.D. in Computer Science"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Specialization</label>
+            <input
+                type="text"
+                formControlName="specialization"
+                placeholder="e.g. Artificial Intelligence"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Department ID *</label>
+            <input
+                type="number"
+                formControlName="departmentId"
+                placeholder="Enter Department ID"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Cabin Number</label>
+            <input
+                type="text"
+                formControlName="cabinNo"
+                placeholder="e.g. Block A - 204"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Date of Joining</label>
+            <input type="date" formControlName="dateOfJoining" />
+            </div>
+
+            <div class="form-group full">
+            <label>Salary (₹)</label>
+            <input
+                type="number"
+                formControlName="salary"
+                placeholder="Enter monthly salary"
+            />
+            </div>
+
+            <div class="form-group full actions">
+            <button class="btn-submit" type="submit">
+                {{ editingId ? "Update" : "Save" }}
+            </button>
+            <button type="button" class="btn-cancel" (click)="closeForm()">
+                Cancel
+            </button>
+            </div>
+        </div>
+        </div>
+    </form>
+
+    <div class="card-grid">
+        <div class="faculty-card" *ngFor="let f of facultyList">
+        <div class="faculty-header">
+            <div>
+            <div class="faculty-name">
+                {{ f.fullName || "Unknown Faculty" }}
+                <span class="badge department-badge">
+                {{ f.departmentName || "No Dept" }}
+                </span>
+            </div>
+            <div class="faculty-details">
+                Emp Code: {{ f.employeeCode || "N/A" }} |
+                {{ f.designation || "N/A" }}
+            </div>
+            </div>
+
+            <div class="faculty-actions">
+            <button class="btn-edit" (click)="editFaculty(f)">Edit</button>
+            <button class="btn-danger" (click)="deleteFaculty(f.id!)">
+                Delete
+            </button>
+            </div>
+        </div>
+
+        <div class="faculty-body">
+            <div class="data-row full-width">
+            <div><strong>Qual:</strong> {{ f.qualification || "N/A" }}</div>
+            </div>
+            <div class="data-row full-width">
+            <div>
+                <strong>Specialization:</strong> {{ f.specialization || "N/A" }}
+            </div>
+            </div>
+            <div class="contact-row">
+            <div><strong>Email:</strong> {{ f.email || "N/A" }}</div>
+            <div><strong>Phone:</strong> {{ f.phone || "N/A" }}</div>
+            </div>
+            <div class="meta-row">
+            <div><strong>Cabin:</strong> {{ f.cabinNo || "N/A" }}</div>
+            <div>
+                <strong>Joined:</strong>
+                {{ (f.dateOfJoining | date: "mediumDate") || "N/A" }}
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
