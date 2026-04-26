@@ -1,5 +1,16 @@
-<app-header></app-header>
+<div class="navbar" *ngIf="isFacultyRoute()">
+  <div class="brand">Staff Management System</div>
 
-<router-outlet />
+  <nav>
+    <a routerLink="/view/faculty/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/view/faculty/staff" routerLinkActive="active">Staff</a>
+    <a routerLink="/view/faculty/profiles" routerLinkActive="active">Profiles</a>
+  </nav>
 
-<app-footer></app-footer>
+  <button class="btn btn-danger">Logout</button>
+</div>
+
+<!-- ✅ THIS FIXES YOUR SPACING ISSUE -->
+<div class="page-content">
+  <router-outlet></router-outlet>
+</div>

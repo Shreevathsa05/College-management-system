@@ -7,9 +7,9 @@ import { FacultyRes } from '../../../models/response_dto/faculty-res';
 const STORAGE_KEY = 'staff_data';
 
 const DEFAULT_STAFF: FacultyRes[] = [
-  { staffId: 3, staffName: 'Aabha',   departmentId: 3, salary: 50000 },
-  { staffId: 6, staffName: 'Gayathri', departmentId: 2, salary: 5000000 },
-  { staffId: 2, staffName: 'Disha',    departmentId: 4, salary: 45000 }
+  { staffId: 1, staffName: 'Aabha',   departmentId: 3, salary: 50000 },
+  { staffId: 2, staffName: 'Gayathri', departmentId: 2, salary: 5000000 },
+  { staffId: 3, staffName: 'Disha',    departmentId: 4, salary: 45000 }
 ];
 
 @Component({

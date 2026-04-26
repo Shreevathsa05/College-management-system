@@ -10,9 +10,9 @@ const routes: Routes = [
     path: '',
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'profile', component: ProfilesComponent },
-      { path: 'staff', component: StaffListComponent },
-      { path: '', redirectTo: 'staff', pathMatch: 'full' }
+      { path: 'profiles',  component: ProfilesComponent },  // ✅ FIXED: was 'profile', navbar links to 'profiles'
+      { path: 'staff',     component: StaffListComponent },
+      { path: '',          redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ];

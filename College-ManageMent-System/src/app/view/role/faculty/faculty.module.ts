@@ -7,6 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfilesComponent } from './profiles/profiles.component';
 import { StaffListComponent } from './staff/staff-list/staff-list.component';
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -16,6 +17,9 @@ import { StaffListComponent } from './staff/staff-list/staff-list.component';
     DashboardComponent,
     ProfilesComponent,
     StaffListComponent
+  ],
+  declarations: [
+
   ]
 })
 export class FacultyModule {}

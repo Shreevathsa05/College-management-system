@@ -1,0 +1,30 @@
+/* push content away from navbar */
+.page-content {
+  padding: 30px;
+  margin-top: 20px;
+}
+
+/* optional: improve navbar layout */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 15px 30px;
+  background: #1a237e;
+  color: white;
+}
+
+.navbar nav {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+}
+
+.navbar a.active {
+  border-bottom: 2px solid yellow;
+}
