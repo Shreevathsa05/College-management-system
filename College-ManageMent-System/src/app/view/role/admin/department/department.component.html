@@ -1,76 +1,133 @@
-<div class="section-header">
-  <div class="section-title">Departments</div>
-  <button class="btn-add" (click)="toggleForm()">+ Add</button>
-</div>
-
-<!-- FORM -->
-<form class="card" *ngIf="showForm" [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
-  <div class="card-header">
-    {{ editingId ? 'Edit Department' : 'Add Department' }}
-  </div>
-
-  <div class="form-body">
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" formControlName="name" />
-      </div>
-
-      <div class="form-group">
-        <label>Code</label>
-        <input type="text" formControlName="code" />
-      </div>
-
-      <div class="form-group">
-        <label>HOD</label>
-        <input type="text" formControlName="hodName" />
-      </div>
-
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" formControlName="email" />
-      </div>
-
-      <div class="form-group full">
-        <label>Extension</label>
-        <input type="number" formControlName="extensionNo" />
-      </div>
-
-      <div class="form-group full actions">
-        <button class="btn-submit" type="submit">
-          {{ editingId ? 'Update' : 'Save' }}
-        </button>
-
-        <button type="button" class="btn-cancel" (click)="closeForm()">
-          Cancel
-        </button>
-      </div>
-
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="title-section">
+      <h1>Department Dashboard</h1>
     </div>
   </div>
-</form>
 
-<!-- CARDS -->
-<div class="card-grid">
-  <div class="dept-card" *ngFor="let dept of department">
+  <!-- SUMMARY CARDS -->
+  <div class="summary-cards">
+    <div class="card">
+      <h3>Total Departments</h3>
+      <p class="count">{{ department.length }}</p>
+    </div>
+  </div>
 
-    <div class="dept-header">
-      <div>
-        <div class="dept-name">{{ dept.name }}</div>
-        <div class="dept-code">{{ dept.code }}</div>
-      </div>
-
-      <div class="dept-actions">
-        <button (click)="editDepartment(dept)">Edit</button>
-        <button (click)="deleteDepartment(dept.id)">Delete</button>
-      </div>
+  <!-- DEPARTMENT LIST -->
+  <div class="list-section">
+    <div class="list-header">
+      <h3>DEPARTMENT INFO</h3>
+      <h3 class="status-header">ACTIONS</h3>
     </div>
 
-    <div class="dept-body">
-      <div><strong>HOD:</strong> {{ dept.hodName }}</div>
-      <div><strong>Email:</strong> {{ dept.email }}</div>
-    </div>
+    <div class="list-items">
+      <div *ngFor="let dept of department" class="list-item">
+        <div class="item-info">
+          <div class="item-avatar">
+            <div class="avatar-placeholder">
+              {{ dept.name[0]?.toUpperCase() }}
+            </div>
+          </div>
+          <div class="item-details">
+            <h4 class="item-name">{{ dept.name }} ({{ dept.code }})</h4>
+            <p class="item-sub">HOD: {{ dept.hodName }} | Email: {{ dept.email }} | Ext: {{ dept.extensionNo }}</p>
+          </div>
+        </div>
 
+        <div class="item-actions">
+          <button class="action-btn edit-btn" (click)="editDepartment(dept)" title="Edit">
+            ✏️
+          </button>
+          <button class="action-btn delete-btn" (click)="deleteDepartment(dept.id)" title="Delete">
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="department.length === 0" class="no-data">
+        <p>No departments found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD BUTTON (FLOATING) -->
+  <button class="add-btn" (click)="toggleForm()" title="Add Department">
+    <span class="plus-icon">+</span>
+  </button>
+
+  <!-- FORM MODAL -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingId ? 'Update Department' : 'Add Department' }}</h2>
+        <button type="button" class="close-btn" (click)="closeForm()">✕</button>
+      </div>
+
+      <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Name *</label>
+            <input type="text" placeholder="Department Name" formControlName="name">
+            @if (departmentForm.get('name')?.invalid && departmentForm.get('name')?.touched) {
+              <div class="error-msg">Name is required</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Code *</label>
+            <input type="text" placeholder="Department Code" formControlName="code">
+            @if (departmentForm.get('code')?.invalid && departmentForm.get('code')?.touched) {
+              <div class="error-msg">
+                @if (departmentForm.get('code')?.errors?.['required']) { Code is required }
+                @if (departmentForm.get('code')?.errors?.['minlength']) { Minimum 2 characters }
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>HOD Name *</label>
+            <input type="text" placeholder="HOD Name" formControlName="hodName">
+            @if (departmentForm.get('hodName')?.invalid && departmentForm.get('hodName')?.touched) {
+              <div class="error-msg">
+                @if (departmentForm.get('hodName')?.errors?.['required']) { HOD Name is required }
+                @if (departmentForm.get('hodName')?.errors?.['minlength']) { Minimum 3 characters }
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" placeholder="Email Address" formControlName="email">
+            @if (departmentForm.get('email')?.invalid && departmentForm.get('email')?.touched) {
+              <div class="error-msg">
+                @if (departmentForm.get('email')?.errors?.['required']) { Email is required }
+                @if (departmentForm.get('email')?.errors?.['email']) { Invalid email format }
+              </div>
+            }
+          </div>
+
+          <div class="form-group full-width">
+            <label>Extension No *</label>
+            <input type="number" placeholder="Extension No" formControlName="extensionNo">
+            @if (departmentForm.get('extensionNo')?.invalid && departmentForm.get('extensionNo')?.touched) {
+              <div class="error-msg">
+                @if (departmentForm.get('extensionNo')?.errors?.['required']) { Extension No is required }
+                @if (departmentForm.get('extensionNo')?.errors?.['pattern']) { Must be 3 to 6 digits }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="departmentForm.invalid">
+            {{ editingId ? 'Update' : 'Create' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="closeForm()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

@@ -9,7 +9,7 @@ import { StudentRes } from '../../models/response_dto/student-res';
 })
 export class StudentService {
 
-  private baseUrl = 'http://localhost:8080/api/students';
+  private baseUrl = '/api/students';
 
   constructor(private http: HttpClient) { }
 
@@ -56,14 +56,14 @@ export class StudentService {
 
   // GET DEPARTMENTS
 getDepartments(): Observable<any[]> {
-  return this.http.get<any[]>('http://localhost:8080/api/departments', {
+  return this.http.get<any[]>('/api/departments', {
     headers: this.getHeaders()
   });
 }
 
 // GET COURSES
 getCourses(): Observable<any[]> {
-  return this.http.get<any[]>('http://localhost:8080/api/courses', {
+  return this.http.get<any[]>('/api/courses', {
     headers: this.getHeaders()
   });
 }
