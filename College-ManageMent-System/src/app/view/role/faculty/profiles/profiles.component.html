@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="page-title">👤 Staff Profiles</div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- Search by ID -->
+  <div class="card">
+    <h2>🔎 Search Profile by ID</h2>
+    <div class="form-group" style="max-width: 480px;">
+      <label>Staff ID</label>
+      <div class="input-btn-row">
+        <input type="number" [(ngModel)]="searchId" placeholder="Enter staff ID..." min="1" (keyup.enter)="searchById()" />
+        <button class="btn btn-primary" (click)="searchById()">Search</button>
+      </div>
+    </div>
+    <div *ngIf="searchError" class="alert alert-danger" style="margin-top:12px;">{{ searchError }}</div>
+  </div>
+
+  <!-- Selected Profile Detail -->
+  <div class="card" *ngIf="selectedStaff" style="border-left: 4px solid #1a237e; border-radius: 0 12px 12px 0;">
+    <h2>📋 Profile Details</h2>
+    <div class="profile-detail-grid">
+      <div class="detail-field">
+        <label>STAFF ID</label>
+        <div class="value id">#{{ selectedStaff.staffId }}</div>
+      </div>
+      <div class="detail-field">
+        <label>FULL NAME</label>
+        <div class="value">{{ selectedStaff.staffName }}</div>
+      </div>
+      <div class="detail-field">
+        <label>DEPARTMENT ID</label>
+        <div class="value">
+          <span class="badge badge-info">Dept {{ selectedStaff.departmentId }}</span>
+        </div>
+      </div>
+      <div class="detail-field">
+        <label>SALARY</label>
+        <div class="value salary">₹{{ selectedStaff.salary | number:'1.2-2' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Profiles Grid -->
+  <div class="card">
+    <h2>All Staff Profiles</h2>
+    <div *ngIf="loading" class="loading">Loading profiles...</div>
+    <div *ngIf="!loading && staffList.length === 0" class="empty-state">No staff found.</div>
+
+    <div *ngIf="!loading && staffList.length > 0" class="profile-grid">
+      <div *ngFor="let s of staffList"
+           class="profile-card"
+           [class.selected]="selectedStaff?.staffId === s.staffId"
+           (click)="selectProfile(s)">
+        <div class="avatar">{{ s.staffName.charAt(0).toUpperCase() }}</div>
+        <div class="name">{{ s.staffName }}</div>
+        <div class="meta">ID: {{ s.staffId }}</div>
+        <div class="meta">Dept: {{ s.departmentId }}</div>
+        <div class="salary">₹{{ s.salary | number:'1.2-2' }}</div>
+      </div>
+    </div>
+  </div>
+</div>

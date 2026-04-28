@@ -1,0 +1,41 @@
+<nav class="navbar">
+
+  <!-- LEFT: Brand -->
+  <div class="brand">
+    <span class="brand-icon">🎓</span>
+    Staff Management System
+  </div>
+
+  <!-- CENTER: Nav Links -->
+  <ul class="nav-links">
+    <li>
+      <a routerLink="/view/faculty/dashboard" routerLinkActive="active">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+    </li>
+    <li>
+      <a routerLink="/view/faculty/staff" routerLinkActive="active">
+        <span class="nav-icon">👥</span> Staff
+      </a>
+    </li>
+    <li>
+      <a routerLink="/view/faculty/profiles" routerLinkActive="active">
+        <span class="nav-icon">👤</span> Profiles
+      </a>
+    </li>
+  </ul>
+
+  <!-- RIGHT: User + Logout -->
+  <div class="nav-actions">
+    <div class="user-info">
+      <div class="avatar">A</div>
+      <span class="username">Admin</span>
+    </div>
+    <button class="logout-btn" (click)="logout()">
+      ⏻ Logout
+    </button>
+  </div>
+
+</nav>
+
+<router-outlet></router-outlet>

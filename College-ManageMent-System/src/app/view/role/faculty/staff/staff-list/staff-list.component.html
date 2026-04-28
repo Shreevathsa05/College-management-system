@@ -1,0 +1,115 @@
+
+<div class="container">
+
+  <div class="header-row">
+    <div class="page-title">👥 Staff Management</div>
+    <button class="btn btn-success" (click)="openAddModal()">+ Add Staff</button>
+  </div>
+
+  <div *ngIf="successMsg" class="alert alert-success">{{ successMsg }}</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- SEARCH & FILTER (2-column layout like screenshot) -->
+  <div class="card">
+    <h2>🔍 Search &amp; Filter</h2>
+
+    <div class="filter-grid">
+      <!-- Row 1: Name + Dept side by side -->
+      <div class="form-group">
+        <label>Search by Name</label>
+        <div class="input-btn-row">
+          <input [(ngModel)]="searchName" placeholder="Enter staff name..." (keyup.enter)="searchByNameFromServer()" />
+          <button class="btn btn-primary" (click)="searchByNameFromServer()">Search</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Filter by Department ID</label>
+        <div class="input-btn-row">
+          <input type="number" [(ngModel)]="filterDeptId" placeholder="Dept ID..." (keyup.enter)="filterByDept()" />
+          <button class="btn btn-primary" (click)="filterByDept()">Filter</button>
+        </div>
+      </div>
+
+      <!-- Row 2: Min salary + Clear -->
+      <div class="form-group filter-grid-full">
+        <label>Filter by Minimum Salary</label>
+        <div class="input-btn-row" style="max-width: 480px;">
+          <input type="number" [(ngModel)]="filterMinSalary" placeholder="Min salary..." (keyup.enter)="filterBySalary()" />
+          <button class="btn btn-primary" (click)="filterBySalary()">Filter</button>
+          <button class="btn btn-secondary" (click)="clearFilters()">Clear All Filters</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h2>
+      Staff Records
+      <span class="record-count">{{ filteredList.length }} records</span>
+    </h2>
+
+    <div *ngIf="loading" class="loading">Loading...</div>
+
+    <div *ngIf="!loading" class="table-wrapper">
+      <table>
+        <thead>
+        <tr>
+          <th>Staff ID</th>
+          <th>Staff Name</th>
+          <th>Department ID</th>
+          <th>Salary (₹)</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let staff of filteredList">
+          <td>{{ staff.staffId }}</td>
+          <td>{{ staff.staffName }}</td>
+          <td><span class="badge badge-info">Dept {{ staff.departmentId }}</span></td>
+          <td>{{ staff.salary | number:'1.2-2' }}</td>
+          <td class="actions-cell">
+            <button class="btn btn-warning" (click)="openEditModal(staff)">✏ Edit</button>
+            <button class="btn btn-danger"  (click)="openDeleteModal(staff)">🗑 Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredList.length === 0">
+          <td colspan="5" class="empty-state">No records found.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div *ngIf="showModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>{{ isEditMode ? 'Edit Staff' : 'Add Staff' }}</h3>
+
+    <div *ngIf="modalError" class="alert alert-danger" style="margin-bottom:10px;">{{ modalError }}</div>
+
+    <input [(ngModel)]="formData.staffName"   placeholder="Staff Name" />
+    <input type="number" [(ngModel)]="formData.departmentId" placeholder="Department ID" />
+    <input type="number" [(ngModel)]="formData.salary"       placeholder="Salary" />
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="showModal = false">Cancel</button>
+      <button class="btn btn-success"   (click)="saveStaff()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div *ngIf="showDeleteModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Confirm Delete</h3>
+    <p style="margin-bottom:16px; color:#555;">Are you sure you want to delete <strong>{{ deletingName }}</strong>?</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="showDeleteModal = false">No</button>
+      <button class="btn btn-danger"    (click)="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
