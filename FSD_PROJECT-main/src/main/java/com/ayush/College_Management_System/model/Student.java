@@ -37,7 +37,6 @@ public class Student extends BaseEntity {
     private String phone;
     private Integer currentSemester;
     private Integer admissionYear;
-
     @Enumerated(EnumType.STRING)
     private StudentStatus status;
 
@@ -76,4 +75,16 @@ public class Student extends BaseEntity {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Results> results;
+
+    private Integer passoutYear;
+    
+    @PrePersist
+    @PreUpdate
+    public void calculatePassoutYear() {
+        if (this.admissionYear != null) {
+            int duration = (this.admissionType == AdmissionType.LATERAL) ? 3 : 4;
+            this.passoutYear = this.admissionYear + duration;
+        }
+    }
+    
 }

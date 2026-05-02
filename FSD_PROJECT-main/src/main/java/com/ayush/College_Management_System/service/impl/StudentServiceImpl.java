@@ -267,4 +267,15 @@ public class StudentServiceImpl implements StudentService {
                 .map(this::mapToResponse)
                 .toList();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentResponseDTO> filterStudents(String keyword){
+        log.info("Filtering students with keyword: {}", keyword);
+        return studentRepo.filterStudentsRepo(keyword)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+    
 }

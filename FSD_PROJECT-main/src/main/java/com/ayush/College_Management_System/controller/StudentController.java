@@ -2,15 +2,21 @@ package com.ayush.College_Management_System.controller;
 import com.ayush.College_Management_System.dto.student.*;
 import com.ayush.College_Management_System.security.SecurityUserAccessor;
 import com.ayush.College_Management_System.service.StudentService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
+import com.ayush.College_Management_System.model.enums.AdmissionType;
+import com.ayush.College_Management_System.model.enums.StudentStatus;
 
 @RestController
 @RequestMapping("/api/students")
@@ -90,5 +96,19 @@ public class StudentController {
 
         log.info("API: Search students with keyword {}", keyword);
         return ResponseEntity.ok(studentService.searchStudents(keyword));
+    }
+
+    @GetMapping("/filter")
+public ResponseEntity<List<StudentResponseDTO>> filterData(
+    @RequestParam(required = false) Long departmentId,
+    @RequestParam(required = false) Long courseId,
+    @RequestParam(required = false) Long semester,
+    @RequestParam(required = false) Integer passoutYear,
+    @RequestParam(required = false) Integer admissionYear,
+    @RequestParam(required = false) StudentStatus status,
+    @RequestParam(required = false) AdmissionType admissionType
+    ){
+        log.info("API: Filter students with keyword {}", keyword);
+        return ResponseEntity.ok(studentService.filterStudents(keyword));
     }
 }

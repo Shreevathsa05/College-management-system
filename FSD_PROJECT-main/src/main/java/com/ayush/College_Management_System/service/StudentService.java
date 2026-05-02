@@ -19,5 +19,7 @@ public interface StudentService {
     
     List<StudentResponseDTO> searchStudents(String keyword);
 
+    List<StudentResponseDTO> filterStudents(String keyword);
+    
     void deleteStudent(Long id);
 }
