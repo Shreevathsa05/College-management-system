@@ -30,6 +30,10 @@ export class StudentComponent implements OnInit {
     'AB_POSITIVE', 'AB_NEGATIVE'
   ];
 
+  emailPattern = /^[^@\s]+@[^@\s]+\.com$/;
+  phonePattern = /^[0-9]{10}$/;
+  todayDate = new Date().toISOString().slice(0, 10);
+
   // Summary cards
   totalStudents = 0;
   activeStudents = 0;
@@ -57,7 +61,7 @@ export class StudentComponent implements OnInit {
     this.loadCourses();
   }
 
-  // ✅ EMPTY FORM TEMPLATE
+  // EMPTY FORM TEMPLATE
   getEmptyForm(): StudentReq {
     return {
       firstName: '',
@@ -80,7 +84,7 @@ export class StudentComponent implements OnInit {
     };
   }
 
-  // ✅ LOAD ALL
+  // LOAD ALL
   loadStudents() {
     this.studentService.getStudents().subscribe({
       next: (res) => {
@@ -133,49 +137,64 @@ export class StudentComponent implements OnInit {
     });
   }
 
-  // ✅ CREATE / UPDATE
+  // CREATE / UPDATE
   submitForm() {
-    
-  if (!this.formData.bloodGroup) this.formData.bloodGroup = null;
-  if (!this.formData.admissionType) this.formData.admissionType = null;
+    if (!this.formData.bloodGroup) this.formData.bloodGroup = null;
+    if (!this.formData.admissionType) this.formData.admissionType = null;
 
-  // 🔥 ENROLLMENT FIX (ADD HERE)
-  if (!this.formData.enrollmentNumber) {
-    this.formData.enrollmentNumber = null;
+    // ENROLLMENT FIX (ADD HERE)
+    if (!this.formData.enrollmentNumber) {
+      this.formData.enrollmentNumber = null;
+    }
+
+    // VALIDATION
+    if (!this.formData.firstName ||
+        !this.formData.rollNo ||
+        !this.formData.departmentId ||
+        !this.formData.courseId) {
+      this.toastr.error("Please fill all required fields", "Validation Error");
+      return;
+    }
+
+    if (this.formData.currentSemester < 1 || this.formData.currentSemester > 8) {
+      this.toastr.error("Semester must be between 1 and 8", "Validation Error");
+      return;
+    }
+
+    if (this.formData.email && !this.emailPattern.test(this.formData.email)) {
+      this.toastr.error("Email must include @ and end with .com", "Validation Error");
+      return;
+    }
+
+    if (this.formData.phone && !this.phonePattern.test(this.formData.phone)) {
+      this.toastr.error("Phone number must be exactly 10 digits", "Validation Error");
+      return;
+    }
+
+    if (this.isEditMode && this.selectedId) {
+      this.studentService.updateStudent(this.selectedId, this.formData).subscribe({
+        next: () => {
+          this.toastr.success("Student updated successfully", "Success");
+          //this.resetForm();
+          this.closeFormModal();
+          this.loadStudents();
+        },
+        error: (err) => this.toastr.error(err.error?.message || "Update failed", "Error")
+      });
+    } else {
+      this.studentService.addStudent(this.formData).subscribe({
+        next: () => {
+          this.toastr.success("Student created successfully", "Success");
+          //this.resetForm();
+          this.closeFormModal();
+          this.loadStudents();
+        },
+        error: (err) => this.toastr.error(err.error?.message || "Create failed", "Error")
+      });
+    }
   }
 
-  // ✅ VALIDATION
-  if (!this.formData.firstName || 
-      !this.formData.rollNo || 
-      !this.formData.departmentId || 
-      !this.formData.courseId) {
-    this.toastr.error("Please fill all required fields", "Validation Error");
-    return;
-  }
-  if (this.isEditMode && this.selectedId) {
-    this.studentService.updateStudent(this.selectedId, this.formData).subscribe({
-      next: () => {
-        this.toastr.success("Student updated successfully", "Success");
-        //this.resetForm();
-        this.closeFormModal();
-        this.loadStudents();
-      },
-      error: (err) => this.toastr.error(err.error?.message || "Update failed", "Error")
-    });
-  } else {
-    this.studentService.addStudent(this.formData).subscribe({
-      next: () => {
-        this.toastr.success("Student created successfully", "Success");
-        //this.resetForm();
-        this.closeFormModal();
-        this.loadStudents();
-      },
-      error: (err) => this.toastr.error(err.error?.message || "Create failed", "Error")
-    });
-  }
-}
-
-  // ✅ EDIT (FIXED PROPER MAPPING)
+  // EDIT (FIXED PROPER MAPPING)
   editStudent(student: StudentRes) {
     this.formData = {
       firstName: student.firstName,
@@ -193,8 +212,6 @@ export class StudentComponent implements OnInit {
       admissionType: student.admissionType || null,
       bloodGroup: student.bloodGroup || null,
       profileImageUrl: student.profileImageUrl || '',
-
-      // ❗ TEMP FIX (until dropdowns added)
       departmentId: this.departments.find(d => d.name === student.departmentName)?.id ?? null,
       courseId: this.courses.find(c => c.courseTitle === student.courseName)?.id ?? null
 
@@ -204,7 +221,7 @@ export class StudentComponent implements OnInit {
     this.isEditMode = true;
   }
 
-  // ✅ DELETE
+  // DELETE
   deleteStudent(id: number) {
   if (confirm("Are you sure you want to delete this student?")) {
     this.studentService.deleteStudent(id).subscribe(() => {
@@ -230,7 +247,7 @@ openFormModal() {
     this.showFormModal = true;
   }
 
-  // ✅ RESET
+  // RESET
   resetForm() {
     this.formData = this.getEmptyForm();
     this.isEditMode = false;

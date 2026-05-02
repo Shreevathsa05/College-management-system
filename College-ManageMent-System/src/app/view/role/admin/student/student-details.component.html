@@ -14,7 +14,8 @@
           <div class="avatar-frame">
             <img *ngIf="student.profileImageUrl" [src]="student.profileImageUrl" alt="{{ student.firstName }}">
             <span *ngIf="!student.profileImageUrl" class="avatar-placeholder">
-              {{ student.firstName[0]?.toUpperCase() }}{{ student.lastName?.[0]?.toUpperCase() }}
+              {{ student.firstName ? student.firstName.charAt(0).toUpperCase() : '' }}
+              {{ student.lastName ? student.lastName.charAt(0).toUpperCase() : '' }}
             </span>
           </div>
           <div class="name-block">

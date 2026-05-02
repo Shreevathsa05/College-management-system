@@ -1,5 +1,4 @@
 package com.ayush.College_Management_System.controller;
-
 import com.ayush.College_Management_System.dto.student.*;
 import com.ayush.College_Management_System.security.SecurityUserAccessor;
 import com.ayush.College_Management_System.service.StudentService;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -33,7 +31,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentById(linkedId));
     }
 
-    // ✅ CREATE
+    // CREATE
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentRequestDTO dto) {
@@ -41,21 +39,21 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(dto));
     }
 
-    // ✅ GET BY ID
+    // GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable Long id) {
         log.info("API: Get Student by id {}", id);
         return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
-    // ✅ GET ALL
+    // GET ALL
     @GetMapping
     public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
         log.info("API: Get all students");
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-    // ✅ UPDATE (PUT — full update)
+    // UPDATE (PUT — full update)
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentResponseDTO> updateStudent(
@@ -66,7 +64,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateStudent(id, dto));
     }
 
-    // ✅ PARTIAL UPDATE (PATCH — only updates non-null fields)
+    // PARTIAL UPDATE (PATCH — only updates non-null fields)
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentResponseDTO> patchStudent(
@@ -77,7 +75,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.patchStudent(id, dto));
     }
 
-    // ✅ DELETE
+    // DELETE
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {

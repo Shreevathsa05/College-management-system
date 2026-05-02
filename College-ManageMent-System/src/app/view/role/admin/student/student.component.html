@@ -131,7 +131,7 @@
         <button class="close-btn" (click)="closeFormModal()">✕</button>
       </div>
 
-      <form (ngSubmit)="submitForm()" class="modal-form">
+      <form #studentForm="ngForm" (ngSubmit)="submitForm()" class="modal-form">
         <div class="form-grid">
           <!-- REQUIRED -->
           <div class="form-group">
@@ -155,7 +155,18 @@
           <div class="form-group">
             <label>Email</label>
             <input type="email" placeholder="Email (Optional)"
-              [(ngModel)]="formData.email" name="email">
+              [(ngModel)]="formData.email" name="email" #emailModel="ngModel"
+              [pattern]="emailPattern">
+            <small class="error" *ngIf="emailModel?.invalid && (emailModel?.dirty || emailModel?.touched)">
+              <span *ngIf="emailModel?.errors?.['pattern']">Email must include &#64; and end with .com.</span>
+              <span *ngIf="emailModel?.errors?.['email']">Please enter a valid email.</span>
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" placeholder="Date of Birth"
+              [(ngModel)]="formData.dob" name="dob" [max]="todayDate">
           </div>
 
           <!-- ENUMS -->
@@ -195,7 +206,10 @@
           <div class="form-group">
             <label>Semester *</label>
             <input type="number" placeholder="Semester"
-              [(ngModel)]="formData.currentSemester" name="currentSemester" required>
+              [(ngModel)]="formData.currentSemester" name="currentSemester" required min="1" max="8">
+            <small class="error" *ngIf="(formData.currentSemester < 1 || formData.currentSemester > 8) && (studentForm.submitted || studentForm.form.controls['currentSemester']?.touched)">
+              Semester must be between 1 and 8.
+            </small>
           </div>
 
           <div class="form-group">
@@ -207,8 +221,12 @@
           <!-- OPTIONAL -->
           <div class="form-group">
             <label>Phone</label>
-            <input type="text" placeholder="Phone (Optional)"
-              [(ngModel)]="formData.phone" name="phone">
+            <input type="tel" placeholder="Phone (Optional)"
+              [(ngModel)]="formData.phone" name="phone" #phoneModel="ngModel"
+              pattern="^[0-9]{10}$" minlength="10" maxlength="10" inputmode="numeric">
+            <small class="error" *ngIf="phoneModel?.invalid && (phoneModel?.dirty || phoneModel?.touched)">
+              <span *ngIf="phoneModel?.errors?.['pattern'] || phoneModel?.errors?.['minlength'] || phoneModel?.errors?.['maxlength']">Phone number must be exactly 10 digits.</span>
+            </small>
           </div>
 
           <div class="form-group">
@@ -247,7 +265,7 @@
 
         <div class="form-actions">
           <button type="submit" class="btn btn-primary"
-            [disabled]="!formData.firstName || !formData.rollNo || !formData.departmentId || !formData.courseId">
+            [disabled]="studentForm.form.invalid">
             {{ isEditMode ? 'Update' : 'Create' }}
           </button>
 

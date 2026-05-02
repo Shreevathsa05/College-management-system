@@ -54,14 +54,14 @@ export class StudentService {
     return this.http.get<StudentRes[]>(`${this.baseUrl}/search?keyword=${encodeURIComponent(keyword)}`, { headers: this.getHeaders() });
   }
 
-  // 🔽 GET DEPARTMENTS
+  // GET DEPARTMENTS
 getDepartments(): Observable<any[]> {
   return this.http.get<any[]>('http://localhost:8080/api/departments', {
     headers: this.getHeaders()
   });
 }
 
-// 🔽 GET COURSES
+// GET COURSES
 getCourses(): Observable<any[]> {
   return this.http.get<any[]>('http://localhost:8080/api/courses', {
     headers: this.getHeaders()
