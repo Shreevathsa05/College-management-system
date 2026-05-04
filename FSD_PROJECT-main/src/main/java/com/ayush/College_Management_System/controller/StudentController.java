@@ -1,6 +1,7 @@
 package com.ayush.College_Management_System.controller;
 
 import com.ayush.College_Management_System.dto.student.*;
+import com.ayush.College_Management_System.model.enums.StudentStatus;
 import com.ayush.College_Management_System.security.SecurityUserAccessor;
 import com.ayush.College_Management_System.service.StudentService;
 
@@ -110,5 +111,27 @@ public class StudentController {
             @RequestParam String keyword) {
         log.info("API: Search students with keyword {}", keyword);
         return ResponseEntity.ok(studentService.searchStudents(keyword));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<StudentResponseDTO>> filterStudents(
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) StudentStatus status,
+            @RequestParam(required = false) Integer semester,
+            @RequestParam(required = false) Integer passoutYear
+    ) {
+
+        log.info("API: Filter students");
+
+        return ResponseEntity.ok(
+                studentService.filterStudents(
+                        departmentId,
+                        courseId,
+                        status,
+                        semester,
+                        passoutYear
+                )
+        );
     }
 }

@@ -47,7 +47,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         // GET endpoints are public (read-only access)
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").hasRole("ADMIN")
                         // POST/PUT/PATCH/DELETE require authentication
                         .anyRequest().authenticated()
                 )
