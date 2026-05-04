@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './core/components/layout/landing/landing.component';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent },
+  { path: 'landing', component: LandingComponent },
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
   {
     path: 'auth',
@@ -13,7 +14,7 @@ const routes: Routes = [
     path: 'view',
     loadChildren: () => import('./view/view.module').then(m => m.ViewModule)
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'landing' },
 ];
 
 @NgModule({

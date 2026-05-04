@@ -18,8 +18,6 @@ public interface StudentService {
     StudentResponseDTO patchStudent(Long id, StudentRequestDTO dto);
     
     List<StudentResponseDTO> searchStudents(String keyword);
-
-    List<StudentResponseDTO> filterStudents(String keyword);
     
     void deleteStudent(Long id);
 }

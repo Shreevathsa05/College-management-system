@@ -1,0 +1,16 @@
+.main-layout {
+  display: flex;
+  min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+}
+
+.sidebar {
+  flex: 0 0 25%; /* 1/4 width */
+  max-width: 25%;
+  border-right: 1px solid #e2e8f0; /* Optional: adds a subtle border between sidebar and content */
+}
+
+.content {
+  flex: 0 0 75%; /* 3/4 width */
+  max-width: 75%;
+  padding: 1.5rem;
+}

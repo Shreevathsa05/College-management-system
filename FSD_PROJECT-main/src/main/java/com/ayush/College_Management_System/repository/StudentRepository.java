@@ -27,14 +27,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
        OR LOWER(s.enrollmentNumber) LIKE LOWER(CONCAT('%', :keyword, '%'))
        """)
     List<Student> searchStudents(@Param("keyword") String keyword);
-
-//This is wrong 
-
-    // @Query("""
-    // SELECT s FROM Student s
-    // WHERE LOWER(s.department.isActive) LIKE LOWER(CONCAT('%', :keyword, '%'))
-    //    OR LOWER(s.department.code) LIKE LOWER(CONCAT('%', :keyword, '%'))
-
-    // """)
-    // List<Student> filterStudentsRepo(@Param("keyword") String keyword);
 }

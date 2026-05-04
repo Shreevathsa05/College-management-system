@@ -1,1 +1,11 @@
-<p>nav-sidebar works!</p>
+<nav class="sidebar-nav">
+  <ul class="nav-list">
+    @for (item of navItems; track item.path) {
+      <li class="nav-item">
+        <a [routerLink]="item.path" routerLinkActive="active-link" class="nav-link">
+          {{ item.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
