@@ -15,6 +15,7 @@ import { CourseService } from '../../../services/course/course.service';
 export class StudentComponent implements OnInit {
 
   students: StudentRes[] = [];
+  filteredStudents: StudentRes[] = [];
   departments: any[] = [];
   courses: any[] = [];
   genders = ['MALE', 'FEMALE', 'OTHER'];
@@ -41,10 +42,11 @@ export class StudentComponent implements OnInit {
   droppedStudents = 0;
 
   // Filters
-  selectedDepartment: string | null = null;
+  selectedDepartment: number | null = null;
   selectedCourse: number | null = null;
   selectedStatus: string | null = null;
   selectedSemester: number | null = null;
+  selectedPassoutYear: number | null = null;
 
   formData: StudentReq = this.getEmptyForm();
 
@@ -89,7 +91,8 @@ export class StudentComponent implements OnInit {
     this.studentService.getStudents().subscribe({
       next: (res) => {
         this.students = res;
-        this.calculateSummaries();
+        this.filteredStudents = res;
+        this.calculateSummaries(res);
       },
       error: (err) => {
         console.error("Error fetching students", err);
@@ -99,20 +102,21 @@ export class StudentComponent implements OnInit {
   }
 
   // Calculate summary counts
-  calculateSummaries() {
-    this.totalStudents = this.students.length;
-    this.activeStudents = this.students.filter(s => s.status === 'ACTIVE').length;
-    this.graduatedStudents = this.students.filter(s => s.status === 'GRADUATED').length;
-    this.droppedStudents = this.students.filter(s => s.status === 'DROPPED').length;
+  calculateSummaries(items: StudentRes[] = this.filteredStudents) {
+    this.totalStudents = items.length;
+    this.activeStudents = items.filter(s => s.status === 'ACTIVE').length;
+    this.graduatedStudents = items.filter(s => s.status === 'GRADUATED').length;
+    this.droppedStudents = items.filter(s => s.status === 'DROPPED').length;
   }
 
   // Search handler
   onSearchChange() {
-    if (this.searchQuery.trim()) {
-      this.studentService.searchStudents(this.searchQuery.trim()).subscribe({
+    const query = this.searchQuery?.trim() ?? '';
+    if (query.length > 0) {
+      this.studentService.searchStudents(query).subscribe({
         next: (res) => {
-          this.students = res;
-          this.calculateSummaries();
+          this.filteredStudents = res;
+          this.calculateSummaries(res);
         },
         error: (err) => {
           console.error("Error searching students", err);
@@ -120,21 +124,32 @@ export class StudentComponent implements OnInit {
         }
       });
     } else {
-      this.loadStudents();
+      this.applyFilters();
     }
   }
 
-  // Filtered students based on filters
-  get filteredStudents(): StudentRes[] {
-    return this.students.filter(student => {
-      const dept = this.departments.find(d => d.id == this.selectedDepartment);
-      const course = this.courses.find(c => c.id == this.selectedCourse);
-      const matchesDepartment = !this.selectedDepartment || student.departmentName === dept?.name;
-      const matchesCourse = !this.selectedCourse || student.courseName === course?.courseTitle;
-      const matchesStatus = !this.selectedStatus || student.status === this.selectedStatus;
-      const matchesSemester = !this.selectedSemester || student.currentSemester === this.selectedSemester;
-      return matchesDepartment && matchesCourse && matchesStatus && matchesSemester;
+  applyFilters() {
+    this.studentService.filterStudents(
+      this.selectedDepartment,
+      this.selectedCourse,
+      this.selectedStatus,
+      this.selectedSemester,
+      this.selectedPassoutYear
+    ).subscribe({
+      next: (res) => {
+        this.filteredStudents = res;
+        this.calculateSummaries(res);
+      },
+      error: (err) => {
+        console.error("Error filtering students", err);
+        this.toastr.error("Failed to filter students", "Error");
+      }
     });
+  }
+
+  onFilterChange() {
+    this.searchQuery = '';
+    this.applyFilters();
   }
 
   // CREATE / UPDATE
@@ -223,16 +238,17 @@ export class StudentComponent implements OnInit {
 
   // DELETE
   deleteStudent(id: number) {
-  if (confirm("Are you sure you want to delete this student?")) {
-    this.studentService.deleteStudent(id).subscribe(() => {
-      this.toastr.success("Student deleted successfully", "Success");
-      this.loadStudents();
-    }, (err) => {
-      this.toastr.error("Failed to delete student", "Error");
-    });
+    if (confirm("Are you sure you want to delete this student?")) {
+      this.studentService.deleteStudent(id).subscribe(() => {
+        this.toastr.success("Student deleted successfully", "Success");
+        this.loadStudents();
+      }, (err) => {
+        this.toastr.error("Failed to delete student", "Error");
+      });
+    }
   }
-}
-openFormModal() {
+
+  openFormModal() {
     this.resetForm();
     this.showFormModal = true;
   }

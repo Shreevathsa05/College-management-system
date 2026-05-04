@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ayush.College_Management_System.dto.student.StudentRequestDTO;
 import com.ayush.College_Management_System.dto.student.StudentResponseDTO;
+import com.ayush.College_Management_System.model.enums.StudentStatus;
 
 public interface StudentService {
 
@@ -18,6 +19,14 @@ public interface StudentService {
     StudentResponseDTO patchStudent(Long id, StudentRequestDTO dto);
     
     List<StudentResponseDTO> searchStudents(String keyword);
+
+    List<StudentResponseDTO> filterStudents(
+            Long departmentId,
+            Long courseId,
+            StudentStatus status,
+            Integer semester,
+            Integer passoutYear
+    );
     
     void deleteStudent(Long id);
 }

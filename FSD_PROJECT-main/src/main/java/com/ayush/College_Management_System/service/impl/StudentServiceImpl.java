@@ -6,13 +6,18 @@ import com.ayush.College_Management_System.exception.ResourceNotFoundException;
 import com.ayush.College_Management_System.model.*;
 import com.ayush.College_Management_System.repository.*;
 import com.ayush.College_Management_System.service.StudentService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ayush.College_Management_System.model.enums.StudentStatus;
+import com.ayush.College_Management_System.specifications.StudentSpecifications;
 
 @Slf4j
 @Service
@@ -268,5 +273,30 @@ public class StudentServiceImpl implements StudentService {
                 .toList();
     }
 
-    
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentResponseDTO> filterStudents(
+            Long departmentId,
+            Long courseId,
+            StudentStatus status,
+            Integer semester,
+            Integer passoutYear
+    ) {
+        log.info("Filtering students with departmentId={}, courseId={}, status={}, semester={}, passoutYear={}",
+                departmentId, courseId, status, semester, passoutYear);
+
+        return studentRepo.findAll(
+                       StudentSpecifications.filterStudents(
+                                departmentId,
+                                courseId,
+                                status,
+                                semester,
+                                passoutYear
+                        )
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StudentReq } from '../../models/request_dto/student-req';
@@ -9,7 +9,8 @@ import { StudentRes } from '../../models/response_dto/student-res';
 })
 export class StudentService {
 
-  private baseUrl = '/api/students';
+  // private baseUrl = '/api/students';
+  private baseUrl = 'http://localhost:8080/api/students';
 
   constructor(private http: HttpClient) { }
 
@@ -51,7 +52,42 @@ export class StudentService {
 
   // SEARCH
   searchStudents(keyword: string): Observable<StudentRes[]> {
-    return this.http.get<StudentRes[]>(`${this.baseUrl}/search?keyword=${encodeURIComponent(keyword)}`, { headers: this.getHeaders() });
+    const params = new HttpParams().set('keyword', keyword);
+    return this.http.get<StudentRes[]>(`${this.baseUrl}/search`, {
+      headers: this.getHeaders(),
+      params
+    });
+  }
+
+  // FILTER
+  filterStudents(
+    departmentId?: number | null,
+    courseId?: number | null,
+    status?: string | null,
+    semester?: number | null,
+    passoutYear?: number | null
+  ): Observable<StudentRes[]> {
+    let params = new HttpParams();
+    if (departmentId != null) {
+      params = params.set('departmentId', departmentId.toString());
+    }
+    if (courseId != null) {
+      params = params.set('courseId', courseId.toString());
+    }
+    if (status) {
+      params = params.set('status', status);
+    }
+    if (semester != null) {
+      params = params.set('semester', semester.toString());
+    }
+    if (passoutYear != null) {
+      params = params.set('passoutYear', passoutYear.toString());
+    }
+
+    return this.http.get<StudentRes[]>(`${this.baseUrl}/filter`, {
+      headers: this.getHeaders(),
+      params
+    });
   }
 
   // GET DEPARTMENTS

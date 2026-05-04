@@ -96,4 +96,25 @@ public class StudentController {
         log.info("API: Search students with keyword {}", keyword);
         return ResponseEntity.ok(studentService.searchStudents(keyword));
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<StudentResponseDTO>> filterStudents(
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) StudentStatus status,
+            @RequestParam(required = false) Integer semester,
+            @RequestParam(required = false) Integer passoutYear
+    ) {
+
+        log.info("API: Filter students with departmentId={}, courseId={}, status={}, semester={}, passoutYear={}",
+                departmentId, courseId, status, semester, passoutYear);
+
+        return ResponseEntity.ok(studentService.filterStudents(
+                departmentId,
+                courseId,
+                status,
+                semester,
+                passoutYear
+        ));
+    }
 }

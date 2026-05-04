@@ -46,30 +46,37 @@
   <div class="filters-section">
     <div class="filter-group">
       <label>Department:</label>
-      <select [(ngModel)]="selectedDepartment" (change)="onSearchChange()">
+      <select [(ngModel)]="selectedDepartment" (change)="onFilterChange()">
         <option [ngValue]="null">All Departments</option>
-        <option *ngFor="let d of departments" [value]="d.id">{{ d.name }}</option>
+        <option *ngFor="let d of departments" [ngValue]="d.id">{{ d.name }}</option>
       </select>
     </div>
     <div class="filter-group">
       <label>Course:</label>
-      <select [(ngModel)]="selectedCourse" (change)="onSearchChange()">
+      <select [(ngModel)]="selectedCourse" (change)="onFilterChange()">
         <option [ngValue]="null">All Courses</option>
-        <option *ngFor="let c of courses" [value]="c.id">{{ c.courseTitle }}</option>
+        <option *ngFor="let c of courses" [ngValue]="c.id">{{ c.courseTitle }}</option>
       </select>
     </div>
     <div class="filter-group">
       <label>Status:</label>
-      <select [(ngModel)]="selectedStatus" (change)="onSearchChange()">
+      <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
         <option [ngValue]="null">All Statuses</option>
-        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        <option *ngFor="let s of statuses" [ngValue]="s">{{ s }}</option>
       </select>
     </div>
     <div class="filter-group">
       <label>Semester:</label>
-      <select [(ngModel)]="selectedSemester" (change)="onSearchChange()">
+      <select [(ngModel)]="selectedSemester" (change)="onFilterChange()">
         <option [ngValue]="null">All Semesters</option>
-        <option *ngFor="let sem of [1,2,3,4,5,6,7,8]" [value]="sem">{{ sem }}</option>
+        <option *ngFor="let sem of [1,2,3,4,5,6,7,8]" [ngValue]="sem">{{ sem }}</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Passout Year:</label>
+      <select [(ngModel)]="selectedPassoutYear" (change)="onFilterChange()">
+        <option [ngValue]="null">All Years</option>
+        <option *ngFor="let year of [2024,2025,2026,2027,2028,2029,2030]" [ngValue]="year">{{ year }}</option>
       </select>
     </div>
   </div>
