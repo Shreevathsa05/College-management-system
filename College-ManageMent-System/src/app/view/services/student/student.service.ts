@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { StudentReq } from '../../models/request_dto/student-req';
 import { StudentRes } from '../../models/response_dto/student-res';
 
@@ -9,10 +10,15 @@ import { StudentRes } from '../../models/response_dto/student-res';
 })
 export class StudentService {
 
-  // private baseUrl = '/api/students';
   private baseUrl = 'http://localhost:8080/api/students';
 
-  constructor(private http: HttpClient) { }
+  // 🔥 CACHE (LIST)
+  private studentsCache: StudentRes[] | null = null;
+
+  // 🔥 CACHE (DETAILS BY ID)
+  private studentDetailsCache: { [key: string]: StudentRes } = {};
+
+  constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
@@ -20,37 +26,82 @@ export class StudentService {
     });
   }
 
-  // CREATE
-  addStudent(data: StudentReq): Observable<any> {
-    return this.http.post(this.baseUrl, data, { headers: this.getHeaders() });
-  }
-
-  // READ ALL
+  // ============================
+  // ✅ GET ALL STUDENTS (CACHED)
+  // ============================
   getStudents(): Observable<StudentRes[]> {
-    return this.http.get<StudentRes[]>(this.baseUrl, { headers: this.getHeaders() });
+    if (this.studentsCache) {
+      return of(this.studentsCache);
+    }
+
+    return this.http.get<StudentRes[]>(this.baseUrl, { headers: this.getHeaders() }).pipe(
+      tap(data => {
+        this.studentsCache = data;
+
+        // 🔥 also populate details cache
+        data.forEach(student => {
+          this.studentDetailsCache[student.id] = student;
+        });
+      })
+    );
   }
 
-  // READ ONE
+  // ============================
+  // ✅ GET SINGLE STUDENT (CACHED)
+  // ============================
   getStudent(id: number | string): Observable<StudentRes> {
-    return this.http.get<StudentRes>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+    const key = id.toString();
+
+    if (this.studentDetailsCache[key]) {
+      return of(this.studentDetailsCache[key]);
+    }
+
+    return this.http.get<StudentRes>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() }).pipe(
+      tap(data => {
+        this.studentDetailsCache[key] = data;
+      })
+    );
   }
 
-  // UPDATE (PUT)
+  // ============================
+  // ✅ CREATE
+  // ============================
+  addStudent(data: StudentReq): Observable<any> {
+    return this.http.post(this.baseUrl, data, { headers: this.getHeaders() }).pipe(
+      tap(() => this.clearCache())
+    );
+  }
+
+  // ============================
+  // ✅ UPDATE
+  // ============================
   updateStudent(id: number | string, data: StudentReq): Observable<StudentRes> {
-    return this.http.put<StudentRes>(`${this.baseUrl}/${id}`, data, { headers: this.getHeaders() });
+    return this.http.put<StudentRes>(`${this.baseUrl}/${id}`, data, { headers: this.getHeaders() }).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
-  // PATCH
+  // ============================
+  // ✅ PATCH
+  // ============================
   patchStudent(id: number | string, data: Partial<StudentReq>): Observable<StudentRes> {
-    return this.http.patch<StudentRes>(`${this.baseUrl}/${id}`, data, { headers: this.getHeaders() });
+    return this.http.patch<StudentRes>(`${this.baseUrl}/${id}`, data, { headers: this.getHeaders() }).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
-  // DELETE
+  // ============================
+  // ✅ DELETE
+  // ============================
   deleteStudent(id: number | string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.delete(`${this.baseUrl}/${id}`, { headers: this.getHeaders() }).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
-  // SEARCH
+  // ============================
+  // ❌ SEARCH (NO CACHE)
+  // ============================
   searchStudents(keyword: string): Observable<StudentRes[]> {
     const params = new HttpParams().set('keyword', keyword);
     return this.http.get<StudentRes[]>(`${this.baseUrl}/search`, {
@@ -59,7 +110,9 @@ export class StudentService {
     });
   }
 
-  // FILTER
+  // ============================
+  // ❌ FILTER (NO CACHE)
+  // ============================
   filterStudents(
     departmentId?: number | null,
     courseId?: number | null,
@@ -67,7 +120,9 @@ export class StudentService {
     semester?: number | null,
     passoutYear?: number | null
   ): Observable<StudentRes[]> {
+
     let params = new HttpParams();
+
     if (departmentId != null) {
       params = params.set('departmentId', departmentId.toString());
     }
@@ -90,17 +145,26 @@ export class StudentService {
     });
   }
 
-  // GET DEPARTMENTS
-getDepartments(): Observable<any[]> {
-  return this.http.get<any[]>('/api/departments', {
-    headers: this.getHeaders()
-  });
-}
+  // ============================
+  // EXTRA APIs
+  // ============================
+  getDepartments(): Observable<any[]> {
+    return this.http.get<any[]>('/api/departments', {
+      headers: this.getHeaders()
+    });
+  }
 
-// GET COURSES
-getCourses(): Observable<any[]> {
-  return this.http.get<any[]>('/api/courses', {
-    headers: this.getHeaders()
-  });
-}
+  getCourses(): Observable<any[]> {
+    return this.http.get<any[]>('/api/courses', {
+      headers: this.getHeaders()
+    });
+  }
+
+  // ============================
+  // 🔥 CLEAR CACHE
+  // ============================
+  private clearCache() {
+    this.studentsCache = null;
+    this.studentDetailsCache = {};
+  }
 }
