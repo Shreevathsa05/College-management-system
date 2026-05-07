@@ -40,12 +40,12 @@ public class StudentServiceImpl implements StudentService {
         Course course = courseRepo.findById(dto.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
-        // ✅ RollNo check
+        // RollNo check
         studentRepo.findByRollNo(dto.getRollNo()).ifPresent(s -> {
             throw new IllegalStateException("Roll number already exists");
         });
 
-        // ✅ Enrollment check
+        // Enrollment check
         if (dto.getEnrollmentNumber() != null && !dto.getEnrollmentNumber().isBlank())  {
             studentRepo.findByEnrollmentNumber(dto.getEnrollmentNumber()).ifPresent(s -> {
                 throw new IllegalStateException("Enrollment number already exists");
@@ -101,14 +101,14 @@ public class StudentServiceImpl implements StudentService {
         Course course = courseRepo.findById(dto.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
-        // ✅ FIXED RollNo validation
+        // RollNo validation
         studentRepo.findByRollNo(dto.getRollNo()).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {
                 throw new IllegalStateException("Roll number already exists");
             }
         });
 
-        // ✅ FIXED Enrollment validation
+        // Enrollment validation
         if (dto.getEnrollmentNumber() != null && !dto.getEnrollmentNumber().isBlank()) {
             studentRepo.findByEnrollmentNumber(dto.getEnrollmentNumber()).ifPresent(existing -> {
                 if (!existing.getId().equals(id)) {
@@ -128,7 +128,7 @@ public class StudentServiceImpl implements StudentService {
         return mapToResponse(updated);
     }
 
-    // FIX: Proper PATCH — only update non-null fields
+    // PATCH — only update non-null fields
     @Override
     @Transactional
     public StudentResponseDTO patchStudent(Long id, StudentRequestDTO dto) {
@@ -138,7 +138,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
 
-        // ✅ RollNo validation
+        // RollNo validation
         if (dto.getRollNo() != null) {
             studentRepo.findByRollNo(dto.getRollNo()).ifPresent(existing -> {
                 if (!existing.getId().equals(id)) {
@@ -148,7 +148,7 @@ public class StudentServiceImpl implements StudentService {
             student.setRollNo(dto.getRollNo());
         }
 
-        // ✅ Enrollment validation
+        // Enrollment validation
         if (dto.getEnrollmentNumber() != null && !dto.getEnrollmentNumber().isBlank()) {
             studentRepo.findByEnrollmentNumber(dto.getEnrollmentNumber()).ifPresent(existing -> {
                 if (!existing.getId().equals(id)) {
@@ -188,7 +188,9 @@ public class StudentServiceImpl implements StudentService {
             student.setCourse(course);
         }
 
-        return mapToResponse(studentRepo.save(student));
+        Student patched = studentRepo.save(student);
+        log.info("Student patched successfully with id: {}", id);
+        return mapToResponse(patched);
     }
 
     @Override

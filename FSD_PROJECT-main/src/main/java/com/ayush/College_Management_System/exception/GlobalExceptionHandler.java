@@ -19,11 +19,9 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler{
 
-    // ─────────────────────────────────────────────
-    // 🔴 Resource Not Found
-    // ─────────────────────────────────────────────
+    // Resource Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(
             ResourceNotFoundException ex,
@@ -39,13 +37,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Auth — User Already Exists
-    // ─────────────────────────────────────────────
+    // Auth — User Already Exists
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(
             UserAlreadyExistsException ex,
-            HttpServletRequest request) {
+            HttpServletRequest request){
 
         log.warn("Signup conflict: {}", ex.getMessage());
 
@@ -57,16 +53,12 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Auth — User Not Found
-    // ─────────────────────────────────────────────
+    // Auth — User Not Found
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(
             UserNotFoundException ex,
-            HttpServletRequest request) {
-
+            HttpServletRequest request){
         log.warn("User not found: {}", ex.getMessage());
-
         return build(
                 HttpStatus.NOT_FOUND,
                 "NOT_FOUND",
@@ -75,9 +67,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Auth — Bad Credentials (wrong password)
-    // ─────────────────────────────────────────────
+    // Auth — Bad Credentials (wrong password)
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(
             BadCredentialsException ex,
@@ -93,16 +83,12 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Auth — Access Denied (wrong role)
-    // ─────────────────────────────────────────────
+    // Auth — Access Denied (wrong role)
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(
             AccessDeniedException ex,
-            HttpServletRequest request) {
-
+            HttpServletRequest request){
         log.warn("Access denied at: {}", request.getRequestURI());
-
         return build(
                 HttpStatus.FORBIDDEN,
                 "FORBIDDEN",
@@ -111,13 +97,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Auth — Account Locked
-    // ─────────────────────────────────────────────
+    // Auth — Account Locked
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<ErrorResponse> handleLocked(
             LockedException ex,
-            HttpServletRequest request) {
+            HttpServletRequest request){
 
         log.warn("Locked account attempt: {}", request.getRequestURI());
 
@@ -129,13 +113,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Auth — Account Disabled
-    // ─────────────────────────────────────────────
+    // Auth — Account Disabled
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ErrorResponse> handleDisabled(
             DisabledException ex,
-            HttpServletRequest request) {
+            HttpServletRequest request){
 
         log.warn("Disabled account attempt: {}", request.getRequestURI());
 
@@ -147,13 +129,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Path / query type mismatch (e.g. non-numeric {id})
-    // ─────────────────────────────────────────────
+    // Path / query type mismatch (e.g. non-numeric {id})
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
             MethodArgumentTypeMismatchException ex,
-            HttpServletRequest request) {
+            HttpServletRequest request){
 
         String msg = "Invalid value for parameter '" + ex.getName() + "'";
         if (ex.getRequiredType() != null) {
@@ -170,13 +150,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Validation Errors (DTO @Valid) — ALL errors returned
-    // ─────────────────────────────────────────────
+    // Validation Errors (DTO @Valid) — ALL errors returned
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex,
-            HttpServletRequest request) {
+            HttpServletRequest request){
 
         // collect ALL field errors, not just first
         String message = ex.getBindingResult()
@@ -195,13 +173,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Constraint Violation (path/query params)
-    // ─────────────────────────────────────────────
+    // Constraint Violation (path/query params)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraint(
             ConstraintViolationException ex,
-            HttpServletRequest request) {
+            HttpServletRequest request){
 
         log.error("Constraint violation: {}", ex.getMessage());
 
@@ -213,9 +189,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Illegal state (e.g. duplicate book return)
-    // ─────────────────────────────────────────────
+    // Illegal state (e.g. duplicate book return)
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalState(
             IllegalStateException ex,
@@ -231,9 +205,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔴 Generic Fallback
-    // ─────────────────────────────────────────────
+    // Generic Fallback
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex,
@@ -249,9 +221,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ─────────────────────────────────────────────
-    // 🔧 Builder helper
-    // ─────────────────────────────────────────────
+    // Builder helper
     private ResponseEntity<ErrorResponse> build(
             HttpStatus status,
             String error,

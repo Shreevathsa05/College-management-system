@@ -157,7 +157,6 @@ export class StudentComponent implements OnInit {
     if (!this.formData.bloodGroup) this.formData.bloodGroup = null;
     if (!this.formData.admissionType) this.formData.admissionType = null;
 
-    // ENROLLMENT FIX (ADD HERE)
     if (!this.formData.enrollmentNumber) {
       this.formData.enrollmentNumber = null;
     }
@@ -209,7 +208,6 @@ export class StudentComponent implements OnInit {
     }
   }
 
-  // EDIT (FIXED PROPER MAPPING)
   editStudent(student: StudentRes) {
     this.formData = {
       firstName: student.firstName,
