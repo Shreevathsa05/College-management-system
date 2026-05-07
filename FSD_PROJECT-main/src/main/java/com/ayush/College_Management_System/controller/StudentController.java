@@ -111,23 +111,25 @@ public class StudentController {
     }
 
     @GetMapping("/filter")
-    @Operation(summary = "Filter students by department, course, status, semester, or passout year")
+    @Operation(summary = "Filter students by department, course, status, semester, admission type, or passout year")
     public ResponseEntity<List<StudentResponseDTO>> filterStudents(
             @RequestParam(required = false) @Parameter(description = "Department ID to filter by") Long departmentId,
             @RequestParam(required = false) @Parameter(description = "Course ID to filter by") Long courseId,
             @RequestParam(required = false) @Parameter(description = "Student status to filter by") StudentStatus status,
             @RequestParam(required = false) @Parameter(description = "Semester number to filter by") Integer semester,
+            @RequestParam(required = false) @Parameter(description = "Admission type to filter by") AdmissionType admissionType,
             @RequestParam(required = false) @Parameter(description = "Passout year to filter by") Integer passoutYear
     ) {
 
-        log.info("API: Filter students with departmentId={}, courseId={}, status={}, semester={}, passoutYear={}",
-                departmentId, courseId, status, semester, passoutYear);
+        log.info("API: Filter students with departmentId={}, courseId={}, status={}, semester={}, admissionType={}, passoutYear={}",
+                departmentId, courseId, status, semester, admissionType, passoutYear);
 
         return ResponseEntity.ok(studentService.filterStudents(
                 departmentId,
                 courseId,
                 status,
                 semester,
+                admissionType,
                 passoutYear
         ));
     }

@@ -101,6 +101,7 @@ export class StudentService {
     courseId?: number | null,
     status?: string | null,
     semester?: number | null,
+    admissionType?: string | null,
     passoutYear?: number | null
   ): Observable<StudentRes[]> {
 
@@ -117,6 +118,9 @@ export class StudentService {
     }
     if (semester != null) {
       params = params.set('semester', semester.toString());
+    }
+    if (admissionType) {
+      params = params.set('admissionType', admissionType);
     }
     if (passoutYear != null) {
       params = params.set('passoutYear', passoutYear.toString());

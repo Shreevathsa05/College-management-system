@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ayush.College_Management_System.dto.student.StudentRequestDTO;
 import com.ayush.College_Management_System.dto.student.StudentResponseDTO;
+import com.ayush.College_Management_System.model.enums.AdmissionType;
 import com.ayush.College_Management_System.model.enums.StudentStatus;
 
 public interface StudentService {
@@ -25,6 +26,7 @@ public interface StudentService {
             Long courseId,
             StudentStatus status,
             Integer semester,
+            AdmissionType admissionType,
             Integer passoutYear
     );
     

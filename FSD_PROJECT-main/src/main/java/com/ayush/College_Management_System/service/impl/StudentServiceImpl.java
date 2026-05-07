@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ayush.College_Management_System.model.enums.AdmissionType;
 import com.ayush.College_Management_System.model.enums.StudentStatus;
 import com.ayush.College_Management_System.specifications.StudentSpecifications;
 
@@ -282,10 +283,11 @@ public class StudentServiceImpl implements StudentService {
             Long courseId,
             StudentStatus status,
             Integer semester,
+            AdmissionType admissionType,
             Integer passoutYear
     ) {
-        log.info("Filtering students with departmentId={}, courseId={}, status={}, semester={}, passoutYear={}",
-                departmentId, courseId, status, semester, passoutYear);
+        log.info("Filtering students with departmentId={}, courseId={}, status={}, semester={}, admissionType={}, passoutYear={}",
+                departmentId, courseId, status, semester, admissionType, passoutYear);
 
         return studentRepo.findAll(
                        StudentSpecifications.filterStudents(
@@ -293,6 +295,7 @@ public class StudentServiceImpl implements StudentService {
                                 courseId,
                                 status,
                                 semester,
+                                admissionType,
                                 passoutYear
                         )
                 )

@@ -47,6 +47,7 @@ export class StudentComponent implements OnInit {
   selectedCourse: number | null = null;
   selectedStatus: string | null = null;
   selectedSemester: number | null = null;
+  selectedAdmissionType: string | null = null;
   selectedPassoutYear: number | null = null;
 
   formData: StudentReq = this.getEmptyForm();
@@ -135,6 +136,7 @@ export class StudentComponent implements OnInit {
       this.selectedCourse,
       this.selectedStatus,
       this.selectedSemester,
+      this.selectedAdmissionType,
       this.selectedPassoutYear
     ).subscribe({
       next: (res) => {

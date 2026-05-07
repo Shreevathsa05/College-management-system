@@ -73,6 +73,13 @@
       </select>
     </div>
     <div class="filter-group">
+      <label>Admission Type:</label>
+      <select [(ngModel)]="selectedAdmissionType" (change)="onFilterChange()">
+        <option [ngValue]="null">All Admission Types</option>
+        <option *ngFor="let a of admissionTypes" [ngValue]="a">{{ a }}</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>Passout Year:</label>
       <select [(ngModel)]="selectedPassoutYear" (change)="onFilterChange()">
         <option [ngValue]="null">All Years</option>
