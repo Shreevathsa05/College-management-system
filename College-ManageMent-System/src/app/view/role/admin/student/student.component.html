@@ -76,7 +76,7 @@
       <label>Passout Year:</label>
       <select [(ngModel)]="selectedPassoutYear" (change)="onFilterChange()">
         <option [ngValue]="null">All Years</option>
-        <option *ngFor="let year of [2024,2025,2026,2027,2028,2029,2030]" [ngValue]="year">{{ year }}</option>
+        <option *ngFor="let year of passoutYears" [ngValue]="year">{{ year }}</option>
       </select>
     </div>
   </div>

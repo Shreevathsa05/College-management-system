@@ -21,6 +21,7 @@ export class StudentComponent implements OnInit {
   genders = ['MALE', 'FEMALE', 'OTHER'];
 
   statuses = ['ACTIVE', 'INACTIVE', 'GRADUATED', 'DROPPED'];
+  passoutYears = Array.from({ length: 31 }, (_, index) => 2000 + index);
 
   admissionTypes = ['REGULAR', 'LATERAL', 'MANAGEMENT', 'NRI', 'SCHOLARSHIP'];
 
@@ -281,6 +282,4 @@ loadCourses() {
     error: (err) => console.error("Error loading courses", err)
   });
 }
-
-
 }
