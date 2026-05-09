@@ -1,1 +1,138 @@
 <p>pg-student works!</p>
+<div class="pg-student-container">
+    <div class="section-header">
+        <div class="section-title">PG Student Management</div>
+        <button class="btn-add" (click)="toggleForm()">+ Add PG Student</button>
+    </div>
+
+    <form
+        class="card form-container"
+        *ngIf="showForm"
+        [formGroup]="pgStudentForm"
+        (ngSubmit)="onSubmit()"
+    >
+        <div class="card-header">
+        {{ editingId ? "Edit PG Student Details" : "Register PG Student" }}
+        </div>
+
+        <div class="form-body">
+        <div class="form-grid">
+            <div class="form-group">
+            <label>Student ID (Allocated to) *</label>
+            <input
+                type="number"
+                formControlName="studentId"
+                placeholder="Unique Student ID"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Program Type</label>
+            <input
+                type="text"
+                formControlName="programType"
+                placeholder="e.g. M.Tech, Ph.D."
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Research Topic</label>
+            <input
+                type="text"
+                formControlName="researchTopic"
+                placeholder="Enter research topic"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>Supervisor Name</label>
+            <input
+                type="text"
+                formControlName="supervisorName"
+                placeholder="e.g. Dr. Smith"
+            />
+            </div>
+
+            <div class="form-group full">
+            <label>Thesis Title</label>
+            <input
+                type="text"
+                formControlName="thesisTitle"
+                placeholder="Enter thesis title"
+            />
+            </div>
+
+            <div class="form-group">
+            <label>PG Start Date</label>
+            <input type="date" formControlName="pgStartDate" />
+            </div>
+
+            <div class="form-group">
+            <label>Expected Completion Date</label>
+            <input type="date" formControlName="expectedCompletionDate" />
+            </div>
+
+            <div class="form-group checkbox-group full">
+            <label class="checkbox-label">
+                <input type="checkbox" formControlName="isThesisSubmitted" />
+                Thesis has been submitted
+            </label>
+            </div>
+
+            <div class="form-group full actions">
+            <button class="btn-submit" type="submit">
+                {{ editingId ? "Update" : "Save" }}
+            </button>
+            <button type="button" class="btn-cancel" (click)="closeForm()">
+                Cancel
+            </button>
+            </div>
+        </div>
+        </div>
+    </form>
+
+    <div class="card-grid">
+        <div class="pg-student-card" *ngFor="let student of pgStudents">
+        <div class="pg-student-header">
+            <div>
+            <div class="pg-student-name">
+                {{ student.studentName || 'Unknown Student' }}
+                <span
+                class="badge"
+                [class.submitted]="student.isThesisSubmitted"
+                [class.pending]="!student.isThesisSubmitted"
+                >
+                {{ student.isThesisSubmitted ? "Submitted" : "Pending" }}
+                </span>
+            </div>
+            <div class="pg-student-details">
+                Roll No: {{ student.rollNo || 'N/A' }} | {{ student.programType || 'N/A' }}
+            </div>
+            </div>
+
+            <div class="pg-student-actions">
+            <button class="btn-edit" (click)="editPgStudent(student)">Edit</button>
+            <button class="btn-danger" (click)="deletePgStudent(student.id!)">
+                Delete
+            </button>
+            </div>
+        </div>
+
+        <div class="pg-student-body">
+            <div class="data-row full-width">
+            <div><strong>Topic:</strong> {{ student.researchTopic || "N/A" }}</div>
+            </div>
+            <div class="data-row full-width">
+            <div><strong>Thesis:</strong> {{ student.thesisTitle || "N/A" }}</div>
+            </div>
+            <div class="data-row">
+            <div><strong>Supervisor:</strong> {{ student.supervisorName || "N/A" }}</div>
+            </div>
+            <div class="date-row">
+            <div><strong>Started:</strong> {{ (student.pgStartDate | date:'mediumDate') || "N/A" }}</div>
+            <div><strong>Expected:</strong> {{ (student.expectedCompletionDate | date:'mediumDate') || "N/A" }}</div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
